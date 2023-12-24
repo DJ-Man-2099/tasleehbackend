@@ -41,6 +41,20 @@ public class ContractController {
 
     }
 
+    // TODO: Add getTopSuggestions
+    // TODO: Add filterContract
+    // TODO: Add getContractByContractNo
+    // TODO: Add deleteContractByContractNo
+    // TODO: Add updateContract
+    // TODO: Add uploadContractFiles
+    // TODO: Add getContractFiles
+    // TODO: Add deleteContractFiles
+    // TODO: Add downloadContractFile
+    // TODO: Add uploadContractErrandsFiles
+    // TODO: Add getContractErrandsFiles
+    // TODO: Add deleteContractErrandsFiles
+    // TODO: Add downloadContractErrandFile
+
     @PostMapping("add")
     public ResponseEntity<String> addContract(@RequestBody AddContractRequest contract) {
         Contract newContract = new Contract();
