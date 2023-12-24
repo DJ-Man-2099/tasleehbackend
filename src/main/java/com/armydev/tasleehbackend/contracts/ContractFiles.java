@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 @Entity
 public class ContractFiles {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer id;
     @ManyToOne
     @JoinColumn(name = "contractId", referencedColumnName = "id")

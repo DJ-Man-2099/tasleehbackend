@@ -11,13 +11,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Table(name = "contracts")
 @Entity
 public class Contract {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer id;
     // @Column(name = "contractNo")
     public String contractNo;
@@ -36,6 +38,19 @@ public class Contract {
     public LocalDateTime updatedAt;
     @OneToMany(mappedBy = "contract")
     public List<ContractFiles> files;
+
+    // Must Add For date adding
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    // Must add for date updating
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }
 
 enum Company {
