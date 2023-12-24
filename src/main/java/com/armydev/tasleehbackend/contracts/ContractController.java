@@ -4,12 +4,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
@@ -25,10 +27,16 @@ public class ContractController {
     // Error Handling
 
     @GetMapping("all")
-    public ResponseEntity<Map<String, Object>> getAllContracts() throws Exception {
-        // TODO: add filtering, pagination
+    public ResponseEntity<Map<String, Object>> getAllContracts(@RequestParam Map<String, String> searchParams)
+            throws Exception {
+        // TODO: add filtering
         var result = new HashMap<String, Object>();
-
+        int pageSize = searchParams.containsKey("pageSize") ? Integer.parseInt(searchParams.get("pageSize")) : 10;
+        int currentPage = searchParams.containsKey("page") ? Integer.parseInt(searchParams.get("page")) : 1;
+        Map<String, String> filters = searchParams.entrySet().stream()
+                .filter(entry -> !entry.getKey().equals("pageSize") || entry.getKey().equals("page"))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        System.out.println(filters.entrySet());
         List<Contract> contracts = repo.findAll();
         Collections.sort(contracts, (c1, c2) -> Integer.compare(c2.id, c1.id));
         result.put("contracts", contracts);
