@@ -1,6 +1,9 @@
 package com.armydev.tasleehbackend.contracts;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
+import lombok.var;
 
 @RestController
 @RequestMapping("/api/v1/contract")
@@ -18,9 +22,23 @@ public class ContractController {
 
     private final ContractRepo repo;
 
+    // Error Handling
+
     @GetMapping("all")
-    public List<Contract> getAllContracts() {
-        return repo.findAll();
+    public ResponseEntity<Map<String, Object>> getAllContracts() throws Exception {
+        // TODO: add filtering, pagination
+        var result = new HashMap<String, Object>();
+
+        List<Contract> contracts = repo.findAll();
+        Collections.sort(contracts, (c1, c2) -> Integer.compare(c2.id, c1.id));
+        result.put("contracts", contracts);
+        result.put("numberOfPages", 0);
+        /*
+         * if (true)
+         * throw new Exception("Testing Error Handling");
+         */
+        return ResponseEntity.ok(result);
+
     }
 
     @PostMapping("add")
