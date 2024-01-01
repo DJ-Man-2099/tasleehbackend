@@ -1,11 +1,17 @@
 package com.armydev.tasleehbackend.contracts;
 
-import java.util.Collections;
+import static com.armydev.tasleehbackend.contracts.ContractSpecs.*;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,14 +39,49 @@ public class ContractController {
         var result = new HashMap<String, Object>();
         int pageSize = searchParams.containsKey("pageSize") ? Integer.parseInt(searchParams.get("pageSize")) : 10;
         int currentPage = searchParams.containsKey("page") ? Integer.parseInt(searchParams.get("page")) : 1;
+
         Map<String, String> filters = searchParams.entrySet().stream()
-                .filter(entry -> !entry.getKey().equals("pageSize") || entry.getKey().equals("page"))
+                .filter(entry -> !(entry.getKey().equals("pageSize") || entry.getKey().equals("page")))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        System.out.println(filters.entrySet());
-        List<Contract> contracts = repo.findAll();
-        Collections.sort(contracts, (c1, c2) -> Integer.compare(c2.id, c1.id));
-        result.put("contracts", contracts);
-        result.put("numberOfPages", 0);
+
+        Pageable pageable = PageRequest.of(currentPage - 1, pageSize, Sort.by(Direction.DESC, "id"));
+
+        Specification<Contract> filter = null;
+        for (var filterEntry : filters.entrySet()) {
+            System.out.println(filterEntry.getKey());
+            if (filter == null) {
+                filter = Specification.where(specsMap.get(filterEntry.getKey()).apply(filterEntry.getValue()));
+            } else {
+                filter = Specification.where(filter)
+                        .and(specsMap.get(filterEntry.getKey()).apply(filterEntry.getValue()));
+            }
+        }
+        // Specification<Contract> filter =
+        // Specification.where(specsMap.get("contractValue").apply("0.200"));
+        Page<Contract> contractsPage = repo.findAll(filter, pageable);
+        Map<String, Boolean> isError = new HashMap<>();
+        /*
+         * for (var filter : filters.entrySet()) {
+         * if (!(filter.getKey().equals("dateBefore") ||
+         * filter.getKey().equals("dateAfter"))) {
+         * contracts = contracts.stream().filter(contract -> {
+         * try {
+         * return contract.getClass().getDeclaredField(filter.getKey())
+         * .toString().contains(filter.getValue());
+         * } catch (Exception e) {
+         * isError.put(filter.getKey(), true);
+         * return false;
+         * }
+         * }).toList();
+         * }
+         * }
+         */
+        if (isError.size() > 0) {
+            throw new IllegalArgumentException(
+                    String.format("Attribute %s is not within class", isError.keySet().toArray()[0]));
+        }
+        result.put("contracts", contractsPage.toList());
+        result.put("numberOfPages", contractsPage.getTotalPages());
         /*
          * if (true)
          * throw new Exception("Testing Error Handling");

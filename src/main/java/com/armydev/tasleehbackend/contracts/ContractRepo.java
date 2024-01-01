@@ -1,7 +1,8 @@
 package com.armydev.tasleehbackend.contracts;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface ContractRepo extends JpaRepository<Contract, Integer> {
+public interface ContractRepo extends JpaRepository<Contract, Integer>, JpaSpecificationExecutor<Contract> {
 
 }

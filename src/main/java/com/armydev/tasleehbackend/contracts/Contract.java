@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -36,6 +38,7 @@ public class Contract {
     public LocalDateTime createdAt;
     // @Column(name = "updatedAt")
     public LocalDateTime updatedAt;
+    @JsonManagedReference
     @OneToMany(mappedBy = "contract")
     public List<ContractFiles> files;
 
