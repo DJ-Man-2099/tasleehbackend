@@ -51,13 +51,3 @@ public class Contract {
     updatedAt = LocalDateTime.now();
   }
 }
-
-enum Company {
-  Soso,
-  Nouri
-}
-
-enum Currency {
-  EUR,
-  USD
-}

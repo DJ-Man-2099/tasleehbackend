@@ -2,6 +2,13 @@ package com.armydev.tasleehbackend.contracts;
 
 import static com.armydev.tasleehbackend.contracts.ContractSpecs.*;
 
+import java.io.File;
+import java.io.InputStream;
+import java.net.URLDecoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AllArgsConstructor;
 import lombok.var;
@@ -35,8 +43,10 @@ import lombok.var;
 public class ContractController {
 
   private final ContractRepo repo;
+  private final ContractFilesRepo filesRepo;
+  private final Path rootLocation = Paths.get("uploads");
 
-  @GetMapping("/")
+  @GetMapping
   public ResponseEntity<Map<String, Object>> getAllContracts(@RequestParam Map<String, String> searchParams)
       throws Exception {
     var result = new HashMap<String, Object>();
@@ -79,7 +89,6 @@ public class ContractController {
       @RequestParam("pattern") String pattern) {
     var result = new HashMap<String, Object>();
     try {
-      // var data = repo.findAll(specsMap.get("groupCurrency").apply(pattern));
       List<String> data = List.of();
       switch (type) {
         case "company":
@@ -92,7 +101,7 @@ public class ContractController {
           data = repo.getContractNoSuggestions(pattern);
           break;
       }
-      result.put("data", data);
+      result.put(type, data);
       result.put("status", HttpStatus.OK.value());
       return ResponseEntity.ok(result);
     } catch (Exception e) {
@@ -166,16 +175,58 @@ public class ContractController {
   }
 
   // TODO: Add uploadContractFiles
+  @PostMapping(path = "{id}/upload")
+  public ResponseEntity<Map<String, Object>> uploadContractFiles(@PathVariable("id") Integer id,
+      @RequestParam("contractFiles") List<MultipartFile> files) {
+    var result = new HashMap<String, Object>();
+    var contract = repo.findById(id).orElseThrow();
+    Path destination;
+    try {
+      for (MultipartFile multipartFile : files) {
+        if (!multipartFile.isEmpty()) {
+          destination = this.rootLocation
+              .resolve(Paths.get(id.toString(), URLDecoder.decode(multipartFile.getOriginalFilename(), "UTF-8")))
+              .normalize();
+          System.out.println(destination);
+          var folder = new File(
+              this.rootLocation.resolve(Paths.get(id.toString())).normalize().toString());
+          if (!folder.exists()) {
+            System.out.println("Folder not found");
+            System.out.println(folder.mkdirs());
+          }
+          try (InputStream inputStream = multipartFile.getInputStream()) {
+            Files.copy(inputStream, destination.toAbsolutePath(),
+                StandardCopyOption.REPLACE_EXISTING);
+            var file = new ContractFiles();
+            file.contract = contract;
+            file.fileName = URLDecoder.decode(multipartFile.getOriginalFilename(), "UTF-8");
+            file.filePath = destination.toString();
+            filesRepo.save(file);
+          }
+        }
+      }
+    } catch (Exception e) {
+      result.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+      result.put("error", e.getMessage());
+      return ResponseEntity.ok(result);
+    }
+    return ResponseEntity.ok(result);
+  }
+
   @GetMapping(path = "{id}/contractfiles")
   public ResponseEntity<Map<String, Object>> getContractFilesById(@PathVariable("id") Integer id) {
     var result = new HashMap<String, Object>();
+    var innerResult = new HashMap<String, Object>();
     try {
       var data = repo.findById(id).orElseThrow().files;
-      result.put("data", data);
+      innerResult.put("rows", data);
+      result.put("data", innerResult);
+      result.put("success", true);
       result.put("status", HttpStatus.OK.value());
       return ResponseEntity.ok(result);
     } catch (Exception e) {
       result.put("error", "Contract doesn't exist");
+      result.put("success", false);
       result.put("status", HttpStatus.NOT_FOUND.value());
       return ResponseEntity.ok(result);
     }
