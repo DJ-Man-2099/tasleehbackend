@@ -245,8 +245,29 @@ public class ContractController {
     }
   }
 
+  @GetMapping(value = "{id}/contractErrandsFiles")
+  public ResponseEntity<Map<String, Object>> getContractErrandsFilesById(@PathVariable("id") Integer id) {
+    var result = new HashMap<String, Object>();
+    var innerResult = new HashMap<String, Object>();
+    try {
+      if (id == null) {
+        throw new IllegalArgumentException("Contract ID cannot be null");
+      }
+      var data = repo.findById(id).orElseThrow().errandsfiles;
+      innerResult.put("rows", data);
+      result.put("data", innerResult);
+      result.put("success", true);
+      result.put("status", HttpStatus.OK.value());
+      return ResponseEntity.ok(result);
+    } catch (Exception e) {
+      result.put("error", "Contract doesn't exist");
+      result.put("success", false);
+      result.put("status", HttpStatus.NOT_FOUND.value());
+      return ResponseEntity.ok(result);
+    }
+  }
+
   // TODO: Add uploadContractErrandsFiles
-  // TODO: Add getContractErrandsFiles
   // TODO: Add deleteContractErrandsFiles
   // TODO: Add downloadContractErrandFile
 

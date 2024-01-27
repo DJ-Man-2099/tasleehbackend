@@ -1,45 +1,33 @@
 package com.armydev.tasleehbackend.contracts;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
-import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
-@Table(name = "contracts")
+@Table(name = "errandsfiles")
 @Entity
-public class Contract {
+public class ErrandsFiles {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   public Integer id;
-  // @Column(name = "contractNo")
-  public String contractNo;
-  public String description;
-  // @Column(name = "contractValue")
-  public double contractValue;
-  public String company;
-  public String currency;
-  // @Column(name = "contractDate")
-  public Date contractDate;
-  // @Column(name = "createdAt")
+  @JsonBackReference
+  @ManyToOne
+  @JoinColumn(name = "contractId", referencedColumnName = "id")
+  public Contract contract;
+  public String fileName;
+  public String filePath;
   public LocalDateTime createdAt;
-  // @Column(name = "updatedAt")
   public LocalDateTime updatedAt;
-  @JsonManagedReference
-  @OneToMany(mappedBy = "contract")
-  public List<ContractFiles> files;
-  @JsonManagedReference
-  @OneToMany(mappedBy = "contract")
-  public List<ErrandsFiles> errandsfiles;
 
   // Must Add For date adding
   @PrePersist
