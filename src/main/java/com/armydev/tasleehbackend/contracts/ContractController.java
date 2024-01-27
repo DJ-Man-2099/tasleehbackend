@@ -59,15 +59,11 @@ public class ContractController {
         .filter(entry -> !(entry.getKey().equals("pageSize") || entry.getKey().equals("page")))
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     // Set Filters
-    Specification<Contract> filter = null;
+    Specification<Contract> filter = Specification.where(null);
     for (var filterEntry : filters.entrySet()) {
       try {
-        if (filter == null) {
-          filter = Specification.where(specsMap.get(filterEntry.getKey()).apply(filterEntry.getValue()));
-        } else {
-          filter = Specification.where(filter)
-              .and(specsMap.get(filterEntry.getKey()).apply(filterEntry.getValue()));
-        }
+        filter = Specification.where(filter)
+            .and(specsMap.get(filterEntry.getKey()).apply(filterEntry.getValue()));
       } catch (Exception e) {
         result.put("status", HttpStatus.BAD_REQUEST.value());
         result.put("error",
@@ -84,10 +80,32 @@ public class ContractController {
 
   }
 
-  @GetMapping(path = "{type}")
-  public ResponseEntity<Map<String, Object>> getSuggestions(@PathVariable("type") String type,
-      @RequestParam("pattern") String pattern) {
+  @GetMapping(value = "{id:[\\d]++}/")
+  public ResponseEntity<Map<String, Object>> getContractById(@PathVariable("id") Integer id) {
     var result = new HashMap<String, Object>();
+    try {
+      if (id == null) {
+        throw new IllegalArgumentException("Contract ID cannot be null");
+      }
+      var data = repo.findById(id).orElseThrow();
+      result.put("data", data);
+      result.put("status", HttpStatus.OK.value());
+      return ResponseEntity.ok(result);
+
+    } catch (Exception e) {
+      result.put("error", "Contract doesn't exist");
+      result.put("status", HttpStatus.NOT_FOUND.value());
+      return ResponseEntity.ok(result);
+    }
+  }
+
+  @GetMapping(value = "{type}")
+  public ResponseEntity<Map<String, Object>> getSuggestions(@PathVariable("type") String type,
+      @RequestParam(value = "pattern", required = false) String pattern) {
+    var result = new HashMap<String, Object>();
+    if (pattern == null) {
+      pattern = "";
+    }
     try {
       List<String> data = List.of();
       switch (type) {
@@ -111,26 +129,13 @@ public class ContractController {
     }
   }
 
-  @GetMapping(path = "{id:\\d+}")
-  public ResponseEntity<Map<String, Object>> getContractById(@PathVariable("id") Integer id) {
-    var result = new HashMap<String, Object>();
-    try {
-      var data = repo.findById(id).orElseThrow();
-      result.put("data", data);
-      result.put("status", HttpStatus.OK.value());
-      return ResponseEntity.ok(result);
-
-    } catch (Exception e) {
-      result.put("error", "Contract doesn't exist");
-      result.put("status", HttpStatus.NOT_FOUND.value());
-      return ResponseEntity.ok(result);
-    }
-  }
-
-  @DeleteMapping(path = "{id}")
+  @DeleteMapping(value = "{id}")
   public ResponseEntity<Map<String, Object>> deleteContractById(@PathVariable("id") Integer id) {
     var result = new HashMap<String, Object>();
     try {
+      if (id == null) {
+        throw new IllegalArgumentException("Contract ID cannot be null");
+      }
       repo.findById(id).orElseThrow();
     } catch (Exception e) {
       result.put("error", "Contract doesn't exist");
@@ -143,12 +148,15 @@ public class ContractController {
     return ResponseEntity.ok(result);
   }
 
-  @PatchMapping(path = "{id}")
+  @PatchMapping(value = "{id}")
   public ResponseEntity<Map<String, Object>> updateContract(@PathVariable("id") Integer id,
       @RequestBody UpdateContractRequest contract) {
     var result = new HashMap<String, Object>();
     Contract newContract = null;
     try {
+      if (id == null) {
+        throw new IllegalArgumentException("Contract ID cannot be null");
+      }
       newContract = repo.findById(id).orElseThrow();
     } catch (Exception e) {
       result.put("status", HttpStatus.NOT_FOUND.value());
@@ -174,11 +182,13 @@ public class ContractController {
     return ResponseEntity.ok(result);
   }
 
-  // TODO: Add uploadContractFiles
-  @PostMapping(path = "{id}/upload")
+  @PostMapping(value = "{id}/upload")
   public ResponseEntity<Map<String, Object>> uploadContractFiles(@PathVariable("id") Integer id,
       @RequestParam("contractFiles") List<MultipartFile> files) {
     var result = new HashMap<String, Object>();
+    if (id == null) {
+      throw new IllegalArgumentException("Contract ID cannot be null");
+    }
     var contract = repo.findById(id).orElseThrow();
     Path destination;
     try {
@@ -213,11 +223,14 @@ public class ContractController {
     return ResponseEntity.ok(result);
   }
 
-  @GetMapping(path = "{id}/contractfiles")
+  @GetMapping(value = "{id}/contractfiles")
   public ResponseEntity<Map<String, Object>> getContractFilesById(@PathVariable("id") Integer id) {
     var result = new HashMap<String, Object>();
     var innerResult = new HashMap<String, Object>();
     try {
+      if (id == null) {
+        throw new IllegalArgumentException("Contract ID cannot be null");
+      }
       var data = repo.findById(id).orElseThrow().files;
       innerResult.put("rows", data);
       result.put("data", innerResult);
@@ -231,8 +244,7 @@ public class ContractController {
       return ResponseEntity.ok(result);
     }
   }
-  // TODO: Add deleteContractFiles
-  // TODO: Add downloadContractFile
+
   // TODO: Add uploadContractErrandsFiles
   // TODO: Add getContractErrandsFiles
   // TODO: Add deleteContractErrandsFiles
