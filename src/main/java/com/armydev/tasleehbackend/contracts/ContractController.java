@@ -44,6 +44,7 @@ public class ContractController {
 
   private final ContractRepo repo;
   private final ContractFilesRepo filesRepo;
+  private final ErrandsFilesRepo errandsFilesRepo;
   private final Path rootLocation = Paths.get("uploads");
 
   @GetMapping
@@ -267,9 +268,47 @@ public class ContractController {
     }
   }
 
-  // TODO: Add uploadContractErrandsFiles
-  // TODO: Add deleteContractErrandsFiles
-  // TODO: Add downloadContractErrandFile
+  @PostMapping(value = "{id}/errandsUpload")
+  public ResponseEntity<Map<String, Object>> uploadContractErrandsFiles(@PathVariable("id") Integer id,
+      @RequestParam("errandsFiles") List<MultipartFile> files) {
+    var result = new HashMap<String, Object>();
+    if (id == null) {
+      throw new IllegalArgumentException("Contract ID cannot be null");
+    }
+    var contract = repo.findById(id).orElseThrow();
+    Path destination;
+    try {
+      for (MultipartFile multipartFile : files) {
+        if (!multipartFile.isEmpty()) {
+          destination = this.rootLocation
+              .resolve(
+                  Paths.get(id.toString(), "errands", URLDecoder.decode(multipartFile.getOriginalFilename(), "UTF-8")))
+              .normalize();
+          System.out.println(destination);
+          var folder = new File(
+              this.rootLocation.resolve(Paths.get(id.toString(), "errands")).normalize().toString());
+          if (!folder.exists()) {
+            System.out.println("Folder not found");
+            System.out.println(folder.mkdirs());
+          }
+          try (InputStream inputStream = multipartFile.getInputStream()) {
+            Files.copy(inputStream, destination.toAbsolutePath(),
+                StandardCopyOption.REPLACE_EXISTING);
+            var file = new ErrandsFiles();
+            file.contract = contract;
+            file.fileName = URLDecoder.decode(multipartFile.getOriginalFilename(), "UTF-8");
+            file.filePath = destination.toString();
+            errandsFilesRepo.save(file);
+          }
+        }
+      }
+    } catch (Exception e) {
+      result.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+      result.put("error", e.getMessage());
+      return ResponseEntity.ok(result);
+    }
+    return ResponseEntity.ok(result);
+  }
 
   @PostMapping
   public ResponseEntity<Map<String, Object>> addContract(@RequestBody AddContractRequest contract) {
