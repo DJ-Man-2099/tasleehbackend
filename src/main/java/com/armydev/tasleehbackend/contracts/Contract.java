@@ -34,12 +34,18 @@ public class Contract {
   public LocalDateTime createdAt;
   // @Column(name = "updatedAt")
   public LocalDateTime updatedAt;
+
   @JsonManagedReference
   @OneToMany(mappedBy = "contract")
   public List<ContractFiles> files;
+
   @JsonManagedReference
   @OneToMany(mappedBy = "contract")
   public List<ErrandsFiles> errandsfiles;
+
+  @JsonManagedReference
+  @OneToMany(mappedBy = "contract")
+  public List<SupplyingSituation> supplyingSituation;
 
   // Must Add For date adding
   @PrePersist
