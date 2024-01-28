@@ -28,7 +28,6 @@ public class SupplyingSituationController {
 
   private final SupplyingSituationRepo repo;
 
-  // TODO: getAllSupplyingSituation ("/")
   @GetMapping
   public ResponseEntity<Map<String, Object>> getAllSupplyingSituation(@RequestParam Map<String, String> searchParams)
       throws Exception {
