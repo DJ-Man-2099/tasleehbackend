@@ -49,6 +49,10 @@ public class Contract {
   @OneToMany(mappedBy = "contract")
   public List<SupplyingSituation> supplyingSituation;
 
+  @JsonManagedReference
+  @OneToMany(mappedBy = "contract")
+  public List<SupplyingSituation> annualAccreditation;
+
   // Must Add For date adding
   @PrePersist
   protected void onCreate() {
