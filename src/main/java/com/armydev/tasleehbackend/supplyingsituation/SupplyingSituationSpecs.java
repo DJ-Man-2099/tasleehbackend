@@ -1,4 +1,4 @@
-package com.armydev.tasleehbackend.contracts;
+package com.armydev.tasleehbackend.supplyingsituation;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,7 +1,8 @@
-package com.armydev.tasleehbackend.contracts;
+package com.armydev.tasleehbackend.errandsfiles;
 
 import java.time.LocalDateTime;
 
+import com.armydev.tasleehbackend.contracts.Contract;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
@@ -14,27 +15,20 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
-@Table(name = "supplyingsituations")
+@Table(name = "errandsfiles")
 @Entity
-public class SupplyingSituation {
+public class ErrandsFiles {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   public Integer id;
-
-  public String category;
-
-  public Integer totalQuantity;
-  public Integer arrivedQuantity;
-  public Integer remainedQuantity;
-  public Float percentage;
-
-  public LocalDateTime createdAt;
-  public LocalDateTime updatedAt;
-
   @JsonBackReference
   @ManyToOne
   @JoinColumn(name = "contractId", referencedColumnName = "id")
   public Contract contract;
+  public String fileName;
+  public String filePath;
+  public LocalDateTime createdAt;
+  public LocalDateTime updatedAt;
 
   // Must Add For date adding
   @PrePersist

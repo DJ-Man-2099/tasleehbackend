@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.armydev.tasleehbackend.errandsfiles.ErrandsFiles;
+import com.armydev.tasleehbackend.supplyingsituation.SupplyingSituation;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;

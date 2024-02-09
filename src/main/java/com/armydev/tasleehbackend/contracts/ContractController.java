@@ -34,6 +34,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.armydev.tasleehbackend.errandsfiles.ErrandsFiles;
+import com.armydev.tasleehbackend.errandsfiles.ErrandsFilesRepo;
+
 import lombok.AllArgsConstructor;
 import lombok.var;
 

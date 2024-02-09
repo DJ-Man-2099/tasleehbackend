@@ -1,6 +1,6 @@
-package com.armydev.tasleehbackend.contracts;
+package com.armydev.tasleehbackend.supplyingsituation;
 
-import static com.armydev.tasleehbackend.contracts.SupplyingSituationSpecs.*;
+import static com.armydev.tasleehbackend.supplyingsituation.SupplyingSituationSpecs.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -61,6 +61,7 @@ public class SupplyingSituationController {
     return ResponseEntity.ok(result);
   }
   // TODO: createContractSupplyingSituation ("/:contractId")
+
   // TODO: updateContractSupplyingSituation ("/:id")
   // TODO: getContractSupplyingSituation ("/:contractId")
 

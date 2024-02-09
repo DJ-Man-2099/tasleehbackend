@@ -1,4 +1,4 @@
-package com.armydev.tasleehbackend.contracts;
+package com.armydev.tasleehbackend.errandsfiles;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
