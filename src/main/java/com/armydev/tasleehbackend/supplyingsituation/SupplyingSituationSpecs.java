@@ -6,8 +6,21 @@ import java.util.function.Function;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import com.armydev.tasleehbackend.contracts.Contract;
+
+import jakarta.persistence.metamodel.SingularAttribute;
+
 public class SupplyingSituationSpecs {
 
-  public static Map<String, Function<String, Specification<SupplyingSituation>>> specsMap = new HashMap<>();
+  public static Map<String, Function<Object, Specification<SupplyingSituation>>> specsMap = new HashMap<>();
 
+  static {
+    specsMap.put("contractId", value -> SupplyingSituationSpecs.byContractId((Contract) value));
+  }
+
+  public static Specification<SupplyingSituation> byContractId(Contract contract) {
+    SingularAttribute<SupplyingSituation, Contract> attrib = SupplyingSituation_.contract;
+    System.out.println(attrib);
+    return (root, query, builder) -> builder.equal(root.get(attrib), contract);
+  }
 }

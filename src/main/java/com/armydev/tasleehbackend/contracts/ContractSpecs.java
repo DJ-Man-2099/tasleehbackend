@@ -9,15 +9,15 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class ContractSpecs {
 
-  public static Map<String, Function<String, Specification<Contract>>> specsMap = new HashMap<>();
+  public static Map<String, Function<Object, Specification<Contract>>> specsMap = new HashMap<>();
 
   static {
-    specsMap.put("contractValue", value -> ContractSpecs.byContractValue(value));
-    specsMap.put("contractNo", value -> ContractSpecs.byContractNo(value));
-    specsMap.put("company", value -> ContractSpecs.byCompany(value));
-    specsMap.put("currency", value -> ContractSpecs.byCurrency(value));
-    specsMap.put("dateBefore", value -> ContractSpecs.byDateBefore(value));
-    specsMap.put("dateAfter", value -> ContractSpecs.byDateAfter(value));
+    specsMap.put("contractValue", value -> ContractSpecs.byContractValue((String) value));
+    specsMap.put("contractNo", value -> ContractSpecs.byContractNo((String) value));
+    specsMap.put("company", value -> ContractSpecs.byCompany((String) value));
+    specsMap.put("currency", value -> ContractSpecs.byCurrency((String) value));
+    specsMap.put("dateBefore", value -> ContractSpecs.byDateBefore((String) value));
+    specsMap.put("dateAfter", value -> ContractSpecs.byDateAfter((String) value));
   }
 
   public static Specification<Contract> byContractValue(String value) {
