@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.armydev.tasleehbackend.contracts.Contract;
 import com.armydev.tasleehbackend.contracts.ContractRepo;
+import com.armydev.tasleehbackend.helpers.RequestsHelper;
 
 import lombok.AllArgsConstructor;
 
@@ -50,16 +51,19 @@ public class SupplyingSituationController {
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		Specification<SupplyingSituation> filter = Specification.where(null);
 
-		for (var filterEntry : filters.entrySet()) {
-			try {
-				filter = Specification.where(filter)
-						.and(specsMap.get(filterEntry.getKey()).apply(filterEntry.getValue()));
-			} catch (Exception e) {
-				result.put("status", HttpStatus.BAD_REQUEST.value());
-				result.put("error",
-						String.format("Attribute %s cannot be found within %s", filterEntry.getKey(), "Contract"));
-				return ResponseEntity.ok(result);
-			}
+		try {
+			filter = Specification.where(filter)
+					.and(
+							RequestsHelper.getFilters(
+									SupplyingSituation.class,
+									searchParams,
+									specsMap));
+
+		} catch (Exception e) {
+			result.put("status", HttpStatus.BAD_REQUEST.value());
+			result.put("error",
+					e.getMessage());
+			return ResponseEntity.ok(result);
 		}
 		// Get Results
 		Page<SupplyingSituation> contractsPage = repo.findAll(filter, pageable);
