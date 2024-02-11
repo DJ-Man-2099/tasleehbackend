@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.armydev.tasleehbackend.errandsfiles.ErrandsFiles;
 import com.armydev.tasleehbackend.errandsfiles.ErrandsFilesRepo;
+import com.armydev.tasleehbackend.helpers.RequestsHelper;
 
 import lombok.AllArgsConstructor;
 import lombok.var;
@@ -58,22 +58,21 @@ public class ContractController {
     int pageSize = searchParams.containsKey("pageSize") ? Integer.parseInt(searchParams.get("pageSize")) : 10;
     int currentPage = searchParams.containsKey("page") ? Integer.parseInt(searchParams.get("page")) : 1;
     Pageable pageable = PageRequest.of(currentPage - 1, pageSize, Sort.by(Direction.DESC, "id"));
-    // Get Filters as String Map
-    Map<String, String> filters = searchParams.entrySet().stream()
-        .filter(entry -> !(entry.getKey().equals("pageSize") || entry.getKey().equals("page")))
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     // Set Filters
     Specification<Contract> filter = Specification.where(null);
-    for (var filterEntry : filters.entrySet()) {
-      try {
-        filter = Specification.where(filter)
-            .and(specsMap.get(filterEntry.getKey()).apply(filterEntry.getValue()));
-      } catch (Exception e) {
-        result.put("status", HttpStatus.BAD_REQUEST.value());
-        result.put("error",
-            String.format("Attribute %s cannot be found within %s", filterEntry.getKey(), "Contract"));
-        return ResponseEntity.ok(result);
-      }
+    var helper = new RequestsHelper<Contract>();
+    try {
+      Specification<Contract> finalFilter = helper.getFilters(
+          Contract.class,
+          searchParams,
+          specsMap);
+      filter = Specification.where(filter)
+          .and(finalFilter);
+    } catch (Exception e) {
+      result.put("status", HttpStatus.BAD_REQUEST.value());
+      result.put("error",
+          e.getMessage());
+      return ResponseEntity.ok(result);
     }
     // Get Results
     Page<Contract> contractsPage = repo.findAll(filter, pageable);

@@ -26,7 +26,9 @@ import lombok.var;
 @RestController
 @RequestMapping("/uploads")
 @AllArgsConstructor
-public class UploadsController {
+public class ContractUploadsController {
+
+  // TODO: Delete all the filesRepo and errandsFilesRepo on Deleting the contract
 
   private final ContractFilesRepo filesRepo;
   private final ErrandsFilesRepo errandsFilesRepo;
