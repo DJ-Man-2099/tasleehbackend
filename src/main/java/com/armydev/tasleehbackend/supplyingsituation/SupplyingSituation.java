@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import com.armydev.tasleehbackend.contracts.Contract;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,6 +37,9 @@ public class SupplyingSituation {
   @ManyToOne
   @JoinColumn(name = "contractId", referencedColumnName = "id")
   public Contract contract;
+
+  @Column(name = "contractId", insertable = false, updatable = false)
+  public Integer contractId;
 
   // Must Add For date adding
   @PrePersist

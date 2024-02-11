@@ -16,7 +16,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("*") // Allow requests from any origin
-                .allowedMethods("GET", "POST", "PUT", "DELETE") // Allowed HTTP methods
+                .allowedMethods("GET", "POST", "PATCH", "DELETE") // Allowed HTTP methods
                 .allowedHeaders("*"); // Allow all headers
     }
 

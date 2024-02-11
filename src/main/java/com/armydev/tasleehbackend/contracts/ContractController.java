@@ -312,7 +312,7 @@ public class ContractController {
     return ResponseEntity.ok(result);
   }
 
-  @PostMapping
+  @PostMapping("/")
   public ResponseEntity<Map<String, Object>> addContract(@RequestBody AddContractRequest contract) {
     var result = new HashMap<String, Object>();
     Contract newContract = new Contract();
