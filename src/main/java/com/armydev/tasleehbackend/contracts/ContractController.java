@@ -22,6 +22,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -84,17 +85,13 @@ public class ContractController {
   }
 
   @GetMapping(value = "{id:[\\d]++}/")
-  public ResponseEntity<Map<String, Object>> getContractById(@PathVariable("id") Integer id) {
+  public ResponseEntity<Map<String, Object>> getContractById(@NonNull @PathVariable("id") Integer id) {
     var result = new HashMap<String, Object>();
     try {
-      if (id == null) {
-        throw new IllegalArgumentException("Contract ID cannot be null");
-      }
       var data = repo.findById(id).orElseThrow();
       result.put("data", data);
       result.put("status", HttpStatus.OK.value());
       return ResponseEntity.ok(result);
-
     } catch (Exception e) {
       result.put("error", "Contract doesn't exist");
       result.put("status", HttpStatus.NOT_FOUND.value());
@@ -133,12 +130,9 @@ public class ContractController {
   }
 
   @DeleteMapping(value = "{id}")
-  public ResponseEntity<Map<String, Object>> deleteContractById(@PathVariable("id") Integer id) {
+  public ResponseEntity<Map<String, Object>> deleteContractById(@NonNull @PathVariable("id") Integer id) {
     var result = new HashMap<String, Object>();
     try {
-      if (id == null) {
-        throw new IllegalArgumentException("Contract ID cannot be null");
-      }
       repo.findById(id).orElseThrow();
     } catch (Exception e) {
       result.put("error", "Contract doesn't exist");
@@ -152,14 +146,11 @@ public class ContractController {
   }
 
   @PatchMapping(value = "{id}")
-  public ResponseEntity<Map<String, Object>> updateContract(@PathVariable("id") Integer id,
+  public ResponseEntity<Map<String, Object>> updateContract(@NonNull @PathVariable("id") Integer id,
       @RequestBody UpdateContractRequest contract) {
     var result = new HashMap<String, Object>();
     Contract newContract = null;
     try {
-      if (id == null) {
-        throw new IllegalArgumentException("Contract ID cannot be null");
-      }
       newContract = repo.findById(id).orElseThrow();
     } catch (Exception e) {
       result.put("status", HttpStatus.NOT_FOUND.value());
@@ -186,12 +177,9 @@ public class ContractController {
   }
 
   @PostMapping(value = "{id}/upload")
-  public ResponseEntity<Map<String, Object>> uploadContractFiles(@PathVariable("id") Integer id,
+  public ResponseEntity<Map<String, Object>> uploadContractFiles(@NonNull @PathVariable("id") Integer id,
       @RequestParam("contractFiles") List<MultipartFile> files) {
     var result = new HashMap<String, Object>();
-    if (id == null) {
-      throw new IllegalArgumentException("Contract ID cannot be null");
-    }
     var contract = repo.findById(id).orElseThrow();
     Path destination;
     try {
@@ -227,13 +215,10 @@ public class ContractController {
   }
 
   @GetMapping(value = "{id}/contractfiles")
-  public ResponseEntity<Map<String, Object>> getContractFilesById(@PathVariable("id") Integer id) {
+  public ResponseEntity<Map<String, Object>> getContractFilesById(@NonNull @PathVariable("id") Integer id) {
     var result = new HashMap<String, Object>();
     var innerResult = new HashMap<String, Object>();
     try {
-      if (id == null) {
-        throw new IllegalArgumentException("Contract ID cannot be null");
-      }
       var data = repo.findById(id).orElseThrow().files;
       innerResult.put("rows", data);
       result.put("data", innerResult);
@@ -249,13 +234,10 @@ public class ContractController {
   }
 
   @GetMapping(value = "{id}/contractErrandsFiles")
-  public ResponseEntity<Map<String, Object>> getContractErrandsFilesById(@PathVariable("id") Integer id) {
+  public ResponseEntity<Map<String, Object>> getContractErrandsFilesById(@NonNull @PathVariable("id") Integer id) {
     var result = new HashMap<String, Object>();
     var innerResult = new HashMap<String, Object>();
     try {
-      if (id == null) {
-        throw new IllegalArgumentException("Contract ID cannot be null");
-      }
       var data = repo.findById(id).orElseThrow().errandsfiles;
       innerResult.put("rows", data);
       result.put("data", innerResult);
@@ -271,12 +253,9 @@ public class ContractController {
   }
 
   @PostMapping(value = "{id}/errandsUpload")
-  public ResponseEntity<Map<String, Object>> uploadContractErrandsFiles(@PathVariable("id") Integer id,
+  public ResponseEntity<Map<String, Object>> uploadContractErrandsFiles(@NonNull @PathVariable("id") Integer id,
       @RequestParam("errandsFiles") List<MultipartFile> files) {
     var result = new HashMap<String, Object>();
-    if (id == null) {
-      throw new IllegalArgumentException("Contract ID cannot be null");
-    }
     var contract = repo.findById(id).orElseThrow();
     Path destination;
     try {

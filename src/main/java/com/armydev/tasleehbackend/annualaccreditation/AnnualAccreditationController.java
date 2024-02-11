@@ -16,6 +16,7 @@ import java.util.Map;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,17 +68,13 @@ public class AnnualAccreditationController {
 	}
 
 	@PostMapping("{contractId}")
-	public ResponseEntity<Map<String, Object>> createAnnualAccredition(@PathVariable("contractId") Integer contractId,
+	public ResponseEntity<Map<String, Object>> createAnnualAccredition(
+			@NonNull @PathVariable("contractId") Integer contractId,
 			@RequestBody UpsertAnnualAccreditationRequest current) {
 		var result = new HashMap<String, Object>();
 		var aa = new AnnualAccreditation();
 		Contract contract;
 		try {
-			if (contractId == null) {
-				result.put("error", "Contract ID is required");
-				result.put("status", HttpStatus.BAD_REQUEST.value());
-				return ResponseEntity.ok(result);
-			}
 			contract = contractRepo.findById(contractId).orElseThrow();
 		} catch (Exception e) {
 			result.put("error", e.getMessage());
@@ -98,16 +95,11 @@ public class AnnualAccreditationController {
 	}
 
 	@PutMapping("{id}")
-	public ResponseEntity<Map<String, Object>> updateContractAnnualAccredition(@PathVariable("id") Integer id,
+	public ResponseEntity<Map<String, Object>> updateContractAnnualAccredition(@NonNull @PathVariable("id") Integer id,
 			@RequestBody UpsertAnnualAccreditationRequest current) {
 		var result = new HashMap<String, Object>();
 		AnnualAccreditation aa;
 		try {
-			if (id == null) {
-				result.put("error", "Annual Accreditation ID is required");
-				result.put("status", HttpStatus.BAD_REQUEST.value());
-				return ResponseEntity.ok(result);
-			}
 			aa = repo.findById(id).orElseThrow();
 		} catch (Exception e) {
 			result.put("error", e.getMessage());
@@ -127,15 +119,11 @@ public class AnnualAccreditationController {
 	}
 
 	@DeleteMapping("{id}")
-	public ResponseEntity<Map<String, Object>> deleteContractAnnualAccredition(@PathVariable("id") Integer id) {
+	public ResponseEntity<Map<String, Object>> deleteContractAnnualAccredition(
+			@NonNull @PathVariable("id") Integer id) {
 		var result = new HashMap<String, Object>();
 		AnnualAccreditation aa;
 		try {
-			if (id == null) {
-				result.put("error", "Annual Accreditation ID is required");
-				result.put("status", HttpStatus.BAD_REQUEST.value());
-				return ResponseEntity.ok(result);
-			}
 			aa = repo.findById(id).orElseThrow();
 			if (aa != null) {
 				repo.delete(aa);
@@ -151,14 +139,9 @@ public class AnnualAccreditationController {
 	}
 
 	@GetMapping("/getAnnual/{id}")
-	public ResponseEntity<Map<String, Object>> getAnnual(@PathVariable("id") Integer id) {
+	public ResponseEntity<Map<String, Object>> getAnnual(@NonNull @PathVariable("id") Integer id) {
 		var result = new HashMap<String, Object>();
 		// Get Data
-		if (id == null) {
-			result.put("error", "Annual Accreditation ID is required");
-			result.put("status", HttpStatus.BAD_REQUEST.value());
-			return ResponseEntity.ok(result);
-		}
 		try {
 			var data = repo.findById(id).orElseThrow();
 			result.put("data", data);
@@ -173,16 +156,10 @@ public class AnnualAccreditationController {
 
 	@GetMapping("{contractId}")
 	public ResponseEntity<Map<String, Object>> getContractAnnualAccredition(
-			@PathVariable("contractId") Integer contractId)
+			@NonNull @PathVariable("contractId") Integer contractId)
 			throws Exception {
 		var result = new HashMap<String, Object>();
 		// Set Filters
-		if (contractId == null) {
-			result.put("error", "Contract ID is required");
-			result.put("status", HttpStatus.BAD_REQUEST.value());
-			return ResponseEntity.ok(result);
-
-		}
 		Contract contract;
 		try {
 			contract = contractRepo.findById(contractId).orElseThrow();
@@ -200,12 +177,9 @@ public class AnnualAccreditationController {
 	}
 
 	@PostMapping(value = "{id}/upload")
-	public ResponseEntity<Map<String, Object>> uploadAnnualAccreditionFiles(@PathVariable("id") Integer id,
+	public ResponseEntity<Map<String, Object>> uploadAnnualAccreditionFiles(@NonNull @PathVariable("id") Integer id,
 			@RequestParam("annualAcreditionFiles") List<MultipartFile> files) {
 		var result = new HashMap<String, Object>();
-		if (id == null) {
-			throw new IllegalArgumentException("Contract ID cannot be null");
-		}
 		var annualAccreditation = repo.findById(id).orElseThrow();
 		Path destination;
 		try {
@@ -242,13 +216,10 @@ public class AnnualAccreditationController {
 	}
 
 	@GetMapping(value = "/annualAccreditionsFiles/{id}")
-	public ResponseEntity<Map<String, Object>> getAnnualAccreditionFiles(@PathVariable("id") Integer id) {
+	public ResponseEntity<Map<String, Object>> getAnnualAccreditionFiles(@NonNull @PathVariable("id") Integer id) {
 		var result = new HashMap<String, Object>();
 		var innerResult = new HashMap<String, Object>();
 		try {
-			if (id == null) {
-				throw new IllegalArgumentException("Annual Accreditation ID cannot be null");
-			}
 			var data = repo.findById(id).orElseThrow().files;
 			innerResult.put("rows", data);
 			result.put("data", innerResult);

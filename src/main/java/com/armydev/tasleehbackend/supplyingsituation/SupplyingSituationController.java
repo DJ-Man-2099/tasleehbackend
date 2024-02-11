@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -60,14 +61,10 @@ public class SupplyingSituationController {
 	}
 
 	@PostMapping("{contractId}")
-	public ResponseEntity<Map<String, Object>> createContractSupplyingSituation(@PathVariable("contractId") Integer id,
+	public ResponseEntity<Map<String, Object>> createContractSupplyingSituation(
+			@NonNull @PathVariable("contractId") Integer id,
 			@RequestBody UpsertSupplyingSituationRequest newSupplyingSituation) {
 		var result = new HashMap<String, Object>();
-		if (id == null) {
-			result.put("status", HttpStatus.BAD_REQUEST.value());
-			result.put("error", "Contract ID is required");
-			return ResponseEntity.ok(result);
-		}
 		Contract contract = contractRepo.findById(id).orElseThrow();
 		SupplyingSituation supplyingSituation = new SupplyingSituation();
 		supplyingSituation.category = newSupplyingSituation.category();
@@ -83,14 +80,9 @@ public class SupplyingSituationController {
 	}
 
 	@PatchMapping("{id}")
-	public ResponseEntity<Map<String, Object>> updateContractSupplyingSituation(@PathVariable("id") Integer id,
+	public ResponseEntity<Map<String, Object>> updateContractSupplyingSituation(@NonNull @PathVariable("id") Integer id,
 			@RequestBody UpsertSupplyingSituationRequest newSupplyingSituation) {
 		var result = new HashMap<String, Object>();
-		if (id == null) {
-			result.put("status", HttpStatus.BAD_REQUEST.value());
-			result.put("error", "ID is required");
-			return ResponseEntity.ok(result);
-		}
 		SupplyingSituation supplyingSituation = repo.findById(id).orElseThrow();
 		supplyingSituation.category = newSupplyingSituation.category();
 		supplyingSituation.arrivedQuantity = newSupplyingSituation.arrivedQuantity();
@@ -104,13 +96,9 @@ public class SupplyingSituationController {
 	}
 
 	@DeleteMapping("{id}")
-	public ResponseEntity<Map<String, Object>> deleteContractSupplyingSituation(@PathVariable("id") Integer id) {
+	public ResponseEntity<Map<String, Object>> deleteContractSupplyingSituation(
+			@NonNull @PathVariable("id") Integer id) {
 		var result = new HashMap<String, Object>();
-		if (id == null) {
-			result.put("status", HttpStatus.BAD_REQUEST.value());
-			result.put("error", "ID is required");
-			return ResponseEntity.ok(result);
-		}
 		SupplyingSituation supplyingSituation;
 		try {
 			supplyingSituation = repo.findById(id).orElseThrow();
@@ -131,14 +119,9 @@ public class SupplyingSituationController {
 
 	@GetMapping("{contractId}")
 	public ResponseEntity<Map<String, Object>> getContractSupplyingSituation(
-			@PathVariable("contractId") Integer contractId, @RequestParam Map<String, String> searchParams)
+			@NonNull @PathVariable("contractId") Integer contractId, @RequestParam Map<String, String> searchParams)
 			throws Exception {
 		var result = new HashMap<String, Object>();
-		if (contractId == null) {
-			result.put("status", HttpStatus.BAD_REQUEST.value());
-			result.put("error", "Contract ID is required");
-			return ResponseEntity.ok(result);
-		}
 		Contract current = contractRepo.findById(contractId).orElseThrow();
 		// Get Filters as String Map
 		Specification<SupplyingSituation> filter = Specification.where(specsMap.get("contract").apply(current));
