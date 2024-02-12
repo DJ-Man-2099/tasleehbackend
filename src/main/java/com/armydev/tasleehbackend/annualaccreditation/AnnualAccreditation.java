@@ -52,6 +52,10 @@ public class AnnualAccreditation {
 	@OneToMany(mappedBy = "annualAccreditation")
 	public List<AnnualAccreditationFiles> files;
 
+	@JsonManagedReference
+	@OneToMany(mappedBy = "annualAccreditation")
+	public List<AnnualAccreditationAvailability> actions;
+
 	// Must Add For date adding
 	@PrePersist
 	protected void onCreate() {
