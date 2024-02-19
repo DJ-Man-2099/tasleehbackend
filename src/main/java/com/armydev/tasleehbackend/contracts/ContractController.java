@@ -42,7 +42,7 @@ import lombok.AllArgsConstructor;
 import lombok.var;
 
 @RestController
-@RequestMapping("/contracts")
+@RequestMapping("contracts")
 @AllArgsConstructor
 public class ContractController {
 

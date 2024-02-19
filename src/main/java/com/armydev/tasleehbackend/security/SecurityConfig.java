@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -27,6 +28,11 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .anyRequest().permitAll())
                 .csrf(csrf -> csrf.disable());
         return http.build();
+    }
+
+    @Override
+    public void configurePathMatch(@NonNull PathMatchConfigurer configurer) {
+        configurer.setUseTrailingSlashMatch(true);
     }
 
 }

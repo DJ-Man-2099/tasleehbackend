@@ -5,23 +5,22 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 
-@RequestMapping(value = { "/guaranteeLettersNotifications", "/annualAccreditionNotifications" })
-@Controller
+@RequestMapping("annualAccreditionNotifications")
+@RestController
 @AllArgsConstructor
 public class AccreditationNotificationController {
 
 	private final AccreditationNotificationRepo repo;
 
-	// TODO: setReadNotification
 	@PostMapping("/{annualAccredId}")
 	public ResponseEntity<Map<String, Object>> setReadNotification(
 			@NonNull @PathVariable("annualAccredId") Integer id) {
@@ -34,8 +33,10 @@ public class AccreditationNotificationController {
 			result.put("status", HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.ok().body(result);
 		}
-		if (notification != null)
-			repo.delete(notification);
+		if (notification != null) {
+			notification.isRead = true;
+			repo.save(notification);
+		}
 		return ResponseEntity.ok(result);
 	}
 

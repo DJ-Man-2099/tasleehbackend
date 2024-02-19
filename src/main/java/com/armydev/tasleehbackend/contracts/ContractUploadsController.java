@@ -24,7 +24,7 @@ import lombok.AllArgsConstructor;
 import lombok.var;
 
 @RestController
-@RequestMapping("/uploads")
+@RequestMapping("uploads")
 @AllArgsConstructor
 public class ContractUploadsController {
 

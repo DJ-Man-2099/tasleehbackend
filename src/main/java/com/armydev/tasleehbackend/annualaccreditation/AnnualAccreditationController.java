@@ -19,15 +19,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.armydev.tasleehbackend.annualaccreditation.availability.Action;
+import com.armydev.tasleehbackend.annualaccreditation.availability.AnnualAccreditationAvailability;
+import com.armydev.tasleehbackend.annualaccreditation.availability.AnnualAccreditationAvailabilityRepo;
 import com.armydev.tasleehbackend.annualaccreditation.files.AnnualAccreditationFiles;
 import com.armydev.tasleehbackend.annualaccreditation.files.AnnualAccreditationFilesRepo;
 import com.armydev.tasleehbackend.contracts.Contract;
@@ -37,17 +40,19 @@ import com.armydev.tasleehbackend.helpers.RequestsHelper;
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("/annualAccreditions")
+@RequestMapping("annualAccreditions")
 @AllArgsConstructor
 public class AnnualAccreditationController {
 
 	private final AnnualAccreditationRepo repo;
+	private final AnnualAccreditationAvailabilityRepo avaRepo;
 	private final AnnualAccreditationFilesRepo filesRepo;
 	private final ContractRepo contractRepo;
 	private final Path rootLocation = Paths.get("annualAccreditionUploads");
 
 	@GetMapping
-	public ResponseEntity<Map<String, Object>> getMethodName(@RequestParam Map<String, String> searchParams)
+	public ResponseEntity<Map<String, Object>> getAllAnnualAcrreditations(
+			@RequestParam Map<String, String> searchParams)
 			throws Exception {
 		var result = new HashMap<String, Object>();
 		// Set Filters
@@ -91,12 +96,17 @@ public class AnnualAccreditationController {
 		aa.openingDate = current.openingDate();
 		aa.expiringDate = current.expiringDate();
 		repo.save(aa);
+		var ava = new AnnualAccreditationAvailability();
+		ava.annualAccreditation = aa;
+		ava.action = Action.loki;
+		ava.action_date = current.expiringDate();
+		avaRepo.save(ava);
 		result.put("message", "new annual accreditation created successfully");
 		result.put("status", HttpStatus.OK.value());
 		return ResponseEntity.ok(result);
 	}
 
-	@PutMapping("{id}")
+	@PatchMapping("{id}")
 	public ResponseEntity<Map<String, Object>> updateContractAnnualAccredition(@NonNull @PathVariable("id") Integer id,
 			@RequestBody UpsertAnnualAccreditationRequest current) {
 		var result = new HashMap<String, Object>();
@@ -115,6 +125,11 @@ public class AnnualAccreditationController {
 		aa.openingDate = current.openingDate();
 		aa.expiringDate = current.expiringDate();
 		repo.save(aa);
+		var ava = new AnnualAccreditationAvailability();
+		ava.annualAccreditation = aa;
+		ava.action = Action.loki;
+		ava.action_date = current.expiringDate();
+		avaRepo.save(ava);
 		result.put("message", "annual accreditation updated successfully");
 		result.put("status", HttpStatus.OK.value());
 		return ResponseEntity.ok(result);
@@ -140,7 +155,7 @@ public class AnnualAccreditationController {
 		return ResponseEntity.ok(result);
 	}
 
-	@GetMapping("/getAnnual/{id}")
+	@GetMapping("getAnnual/{id}")
 	public ResponseEntity<Map<String, Object>> getAnnual(@NonNull @PathVariable("id") Integer id) {
 		var result = new HashMap<String, Object>();
 		// Get Data

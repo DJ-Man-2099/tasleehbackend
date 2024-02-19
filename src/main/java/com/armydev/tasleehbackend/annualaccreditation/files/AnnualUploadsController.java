@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("/annualAccreditionUploads")
+@RequestMapping("annualAccreditionUploads")
 @AllArgsConstructor
 public class AnnualUploadsController {
 

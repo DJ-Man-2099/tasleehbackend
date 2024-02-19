@@ -26,7 +26,7 @@ import com.armydev.tasleehbackend.helpers.RequestsHelper;
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("/contractSupplyingSituation/")
+@RequestMapping("contractSupplyingSituation")
 @AllArgsConstructor
 public class SupplyingSituationController {
 
