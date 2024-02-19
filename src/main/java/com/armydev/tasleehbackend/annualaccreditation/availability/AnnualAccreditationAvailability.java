@@ -1,7 +1,8 @@
-package com.armydev.tasleehbackend.annualaccreditation;
+package com.armydev.tasleehbackend.annualaccreditation.availability;
 
 import java.sql.Date;
 
+import com.armydev.tasleehbackend.annualaccreditation.AnnualAccreditation;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;

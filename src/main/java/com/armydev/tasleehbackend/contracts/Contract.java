@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.armydev.tasleehbackend.annualaccreditation.AnnualAccreditation;
+import com.armydev.tasleehbackend.annualaccreditation.notification.AccreditationNotification;
 import com.armydev.tasleehbackend.errandsfiles.ErrandsFiles;
 import com.armydev.tasleehbackend.supplyingsituation.SupplyingSituation;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -53,6 +54,10 @@ public class Contract {
   @JsonManagedReference
   @OneToMany(mappedBy = "contract")
   public List<AnnualAccreditation> annualAccreditation;
+
+  @JsonManagedReference
+  @OneToMany(mappedBy = "contract")
+  public List<AccreditationNotification> accreditationNotification;
 
   // Must Add For date adding
   @PrePersist

@@ -1,7 +1,8 @@
-package com.armydev.tasleehbackend.annualaccreditation;
+package com.armydev.tasleehbackend.annualaccreditation.files;
 
 import java.time.LocalDateTime;
 
+import com.armydev.tasleehbackend.annualaccreditation.AnnualAccreditation;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;

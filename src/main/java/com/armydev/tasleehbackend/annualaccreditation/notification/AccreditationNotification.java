@@ -1,15 +1,10 @@
-package com.armydev.tasleehbackend.annualaccreditation;
+package com.armydev.tasleehbackend.annualaccreditation.notification;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
-import java.util.List;
 
-import com.armydev.tasleehbackend.annualaccreditation.availability.AnnualAccreditationAvailability;
-import com.armydev.tasleehbackend.annualaccreditation.files.AnnualAccreditationFiles;
-import com.armydev.tasleehbackend.annualaccreditation.notification.AccreditationNotification;
+import com.armydev.tasleehbackend.annualaccreditation.AnnualAccreditation;
 import com.armydev.tasleehbackend.contracts.Contract;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,31 +13,32 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
-@Table(name = "annualaccreditions")
+@Table(name = "accreditionnotifications")
 @Entity
-public class AnnualAccreditation {
+public class AccreditationNotification {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Integer id;
 
-	public String openingBank;
-	public String currency;
+	public String description;
 
-	@Column(unique = true, nullable = false)
-	public Long accreditionNo;
+	public boolean isRead;
 
-	public Integer accreditionValue;
-
-	public Date openingDate;
-	public Date expiringDate;
 	public LocalDateTime createdAt;
 	public LocalDateTime updatedAt;
+
+	@JsonBackReference
+	@OneToOne
+	@JoinColumn(name = "AnnualAccreditionId", referencedColumnName = "id")
+	public AnnualAccreditation annualAccreditation;
+
+	@Column(name = "AnnualAccreditionId", insertable = false, updatable = false)
+	public Integer annualAccreditionId;
 
 	@JsonBackReference
 	@ManyToOne
@@ -51,18 +47,6 @@ public class AnnualAccreditation {
 
 	@Column(name = "contractId", insertable = false, updatable = false)
 	public Integer contractId;
-
-	@JsonManagedReference
-	@OneToMany(mappedBy = "annualAccreditation")
-	public List<AnnualAccreditationFiles> files;
-
-	@JsonManagedReference
-	@OneToMany(mappedBy = "annualAccreditation")
-	public List<AnnualAccreditationAvailability> actions;
-
-	@JsonManagedReference
-	@OneToOne(mappedBy = "annualAccreditation")
-	public AccreditationNotification notification;
 
 	// Must Add For date adding
 	@PrePersist
@@ -76,5 +60,4 @@ public class AnnualAccreditation {
 	protected void onUpdate() {
 		updatedAt = LocalDateTime.now();
 	}
-
 }
