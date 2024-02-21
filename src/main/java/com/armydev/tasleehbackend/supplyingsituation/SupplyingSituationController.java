@@ -67,7 +67,7 @@ public class SupplyingSituationController {
 		var result = new HashMap<String, Object>();
 		Contract contract = contractRepo.findById(id).orElseThrow();
 		SupplyingSituation supplyingSituation = new SupplyingSituation();
-		supplyingSituation.category = newSupplyingSituation.category();
+		supplyingSituation.product = newSupplyingSituation.product();
 		supplyingSituation.arrivedQuantity = newSupplyingSituation.arrivedQuantity();
 		supplyingSituation.remainedQuantity = newSupplyingSituation.remainedQuantity();
 		supplyingSituation.totalQuantity = newSupplyingSituation.totalQuantity();
@@ -84,7 +84,7 @@ public class SupplyingSituationController {
 			@RequestBody UpsertSupplyingSituationRequest newSupplyingSituation) {
 		var result = new HashMap<String, Object>();
 		SupplyingSituation supplyingSituation = repo.findById(id).orElseThrow();
-		supplyingSituation.category = newSupplyingSituation.category();
+		supplyingSituation.product = newSupplyingSituation.product();
 		supplyingSituation.arrivedQuantity = newSupplyingSituation.arrivedQuantity();
 		supplyingSituation.remainedQuantity = newSupplyingSituation.remainedQuantity();
 		supplyingSituation.totalQuantity = newSupplyingSituation.totalQuantity();

@@ -6,10 +6,10 @@ import com.armydev.tasleehbackend.contracts.Contract;
  * InnerSupplyingSituation
  */
 public record UpsertSupplyingSituationRequest(
-                String category,
-                Integer totalQuantity,
-                Integer arrivedQuantity,
-                Integer remainedQuantity,
-                Float percentage,
-                Contract contract) {
+        String product,
+        Integer totalQuantity,
+        Integer arrivedQuantity,
+        Integer remainedQuantity,
+        Float percentage,
+        Contract contract) {
 }

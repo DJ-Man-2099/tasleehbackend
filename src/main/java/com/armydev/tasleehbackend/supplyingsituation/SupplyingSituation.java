@@ -23,7 +23,7 @@ public class SupplyingSituation {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   public Integer id;
 
-  public String category;
+  public String product;
 
   public Integer totalQuantity;
   public Integer arrivedQuantity;
