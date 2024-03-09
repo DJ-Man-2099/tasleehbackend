@@ -84,7 +84,7 @@ public class ContractController {
 
   }
 
-  @GetMapping(value = "{id:[\\d]++}/")
+  @GetMapping(value = "{id:[\\d]++}")
   public ResponseEntity<Map<String, Object>> getContractById(@NonNull @PathVariable("id") Integer id) {
     var result = new HashMap<String, Object>();
     try {
@@ -95,36 +95,6 @@ public class ContractController {
     } catch (Exception e) {
       result.put("error", "Contract doesn't exist");
       result.put("status", HttpStatus.NOT_FOUND.value());
-      return ResponseEntity.ok(result);
-    }
-  }
-
-  @GetMapping(value = "{type}")
-  public ResponseEntity<Map<String, Object>> getSuggestions(@PathVariable("type") String type,
-      @RequestParam(value = "pattern", required = false) String pattern) {
-    var result = new HashMap<String, Object>();
-    if (pattern == null) {
-      pattern = "";
-    }
-    try {
-      List<String> data = List.of();
-      switch (type) {
-        case "company":
-          data = repo.getCompanySuggestions(pattern);
-          break;
-        case "currency":
-          data = repo.getCurrencySuggestions(pattern);
-          break;
-        case "contractNo":
-          data = repo.getContractNoSuggestions(pattern);
-          break;
-      }
-      result.put(type, data);
-      result.put("status", HttpStatus.OK.value());
-      return ResponseEntity.ok(result);
-    } catch (Exception e) {
-      result.put("error", e.getMessage());
-      result.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
       return ResponseEntity.ok(result);
     }
   }

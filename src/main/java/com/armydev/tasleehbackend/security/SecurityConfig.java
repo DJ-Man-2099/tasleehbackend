@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -35,16 +34,18 @@ public class SecurityConfig implements WebMvcConfigurer {
     public void configurePathMatch(@NonNull PathMatchConfigurer configurer) {
         configurer.setUseTrailingSlashMatch(true);
     }
-
-    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
-            "classpath:/META-INF/resources/", "classpath:/resources/",
-            "classpath:/static/", "classpath:/public/" };
-
-    @Override
-    public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-        // registry.addResourceHandler("/assets/images/**")
-        // .addResourceLocations("classpath:/static/assets/assets/images/");
-        // registry.addResourceHandler("/scripts/**")
-        // .addResourceLocations("classpath:/static/scripts/");
-    }
+    // for serving static resources
+    /*
+     * private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
+     * "classpath:/META-INF/resources/", "classpath:/resources/",
+     * "classpath:/static/", "classpath:/public/" };
+     * 
+     * @Override
+     * public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
+     * // registry.addResourceHandler("/assets/images/**")
+     * // .addResourceLocations("classpath:/static/assets/assets/images/");
+     * // registry.addResourceHandler("/scripts/**")
+     * // .addResourceLocations("classpath:/static/scripts/");
+     * }
+     */
 }
