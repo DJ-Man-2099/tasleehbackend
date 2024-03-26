@@ -2,7 +2,9 @@ package com.armydev.tasleehbackend.contracts;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,11 +18,12 @@ import jakarta.persistence.Table;
 
 @Table(name = "contractfiles")
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class ContractFiles {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   public Integer id;
-  @JsonBackReference
+  @JsonIdentityReference(alwaysAsId = true)
   @ManyToOne
   @JoinColumn(name = "contractId", referencedColumnName = "id")
   public Contract contract;

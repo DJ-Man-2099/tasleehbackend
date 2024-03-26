@@ -18,4 +18,9 @@ public class SocketServer implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		server.start();
 	}
+
+	public void sendMessage(String message, Object data) {
+		server.getBroadcastOperations().sendEvent(message, data);
+	}
+
 }

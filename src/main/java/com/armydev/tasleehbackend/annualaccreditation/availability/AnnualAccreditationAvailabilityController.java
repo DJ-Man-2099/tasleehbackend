@@ -19,7 +19,6 @@ import lombok.NonNull;
 public class AnnualAccreditationAvailabilityController {
 	private final AnnualAccreditationAvailabilityRepo repo;
 
-	// TODO: getAllAnnualAccreditionsAvailability
 	@GetMapping("{aaId}")
 	public ResponseEntity<Map<String, Object>> getHistory(@NonNull @PathVariable("aaId") Integer id) {
 		var result = new HashMap<String, Object>();

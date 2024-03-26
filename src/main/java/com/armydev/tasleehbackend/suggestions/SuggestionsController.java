@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.armydev.tasleehbackend.annualaccreditation.AnnualAccreditationRepo;
 import com.armydev.tasleehbackend.contracts.ContractRepo;
+import com.armydev.tasleehbackend.guaranteeletter.GuaranteeLetterRepo;
 
 import lombok.AllArgsConstructor;
 
@@ -21,6 +23,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class SuggestionsController {
 	private final ContractRepo contractRepo;
+	private final AnnualAccreditationRepo aaRepo;
+	private final GuaranteeLetterRepo glRepo;
 
 	@GetMapping(value = "{type}")
 	public ResponseEntity<Map<String, Object>> getSuggestions(@PathVariable("type") String type,
@@ -40,6 +44,12 @@ public class SuggestionsController {
 					break;
 				case "contractNo":
 					data = contractRepo.getContractNoSuggestions(pattern);
+					break;
+				case "openingBank":
+					data = aaRepo.getOpeningBankSuggestions(pattern);
+					break;
+				case "reportedBank":
+					data = glRepo.getReportedBankSuggestions(pattern);
 					break;
 			}
 			result.put(type, data);

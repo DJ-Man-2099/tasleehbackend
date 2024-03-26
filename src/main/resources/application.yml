@@ -5,6 +5,9 @@ socket-server:
   port: 3001
   hostname: localhost
 spring:
+  jackson:
+    serialization:
+     write-dates-as-timestamps: false
   servlet:
     multipart:
       max-file-size: 10MB

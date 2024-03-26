@@ -3,7 +3,9 @@ package com.armydev.tasleehbackend.annualaccreditation.files;
 import java.time.LocalDateTime;
 
 import com.armydev.tasleehbackend.annualaccreditation.AnnualAccreditation;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,11 +19,12 @@ import jakarta.persistence.Table;
 
 @Table(name = "annualaccreditionfiles")
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class AnnualAccreditationFiles {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   public Integer id;
-  @JsonBackReference
+  @JsonIdentityReference(alwaysAsId = true)
   @ManyToOne
   @JoinColumn(name = "annualAccreditionId", referencedColumnName = "id")
   public AnnualAccreditation annualAccreditation;

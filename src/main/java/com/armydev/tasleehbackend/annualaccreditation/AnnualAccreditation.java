@@ -8,8 +8,9 @@ import com.armydev.tasleehbackend.annualaccreditation.availability.AnnualAccredi
 import com.armydev.tasleehbackend.annualaccreditation.files.AnnualAccreditationFiles;
 import com.armydev.tasleehbackend.annualaccreditation.notification.AccreditationNotification;
 import com.armydev.tasleehbackend.contracts.Contract;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,6 +27,7 @@ import jakarta.persistence.Table;
 
 @Table(name = "annualaccreditions")
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class AnnualAccreditation {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +46,6 @@ public class AnnualAccreditation {
 	public LocalDateTime createdAt;
 	public LocalDateTime updatedAt;
 
-	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "contractId", referencedColumnName = "id")
 	public Contract contract;
@@ -52,15 +53,15 @@ public class AnnualAccreditation {
 	@Column(name = "contractId", insertable = false, updatable = false)
 	public Integer contractId;
 
-	@JsonManagedReference
+	@JsonIdentityReference(alwaysAsId = true)
 	@OneToMany(mappedBy = "annualAccreditation")
 	public List<AnnualAccreditationFiles> files;
 
-	@JsonManagedReference
+	@JsonIdentityReference(alwaysAsId = true)
 	@OneToMany(mappedBy = "annualAccreditation")
 	public List<AnnualAccreditationAvailability> actions;
 
-	@JsonManagedReference
+	@JsonIdentityReference(alwaysAsId = true)
 	@OneToOne(mappedBy = "annualAccreditation")
 	public AccreditationNotification notification;
 

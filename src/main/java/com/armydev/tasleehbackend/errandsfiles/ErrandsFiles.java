@@ -3,7 +3,9 @@ package com.armydev.tasleehbackend.errandsfiles;
 import java.time.LocalDateTime;
 
 import com.armydev.tasleehbackend.contracts.Contract;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,11 +19,12 @@ import jakarta.persistence.Table;
 
 @Table(name = "errandsfiles")
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class ErrandsFiles {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   public Integer id;
-  @JsonBackReference
+  @JsonIdentityReference(alwaysAsId = true)
   @ManyToOne
   @JoinColumn(name = "contractId", referencedColumnName = "id")
   public Contract contract;

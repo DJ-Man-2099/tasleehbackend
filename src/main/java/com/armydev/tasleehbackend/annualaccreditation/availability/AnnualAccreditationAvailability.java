@@ -4,7 +4,9 @@ import java.sql.Date;
 import java.time.LocalDateTime;
 
 import com.armydev.tasleehbackend.annualaccreditation.AnnualAccreditation;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,6 +23,7 @@ import jakarta.persistence.Table;
 
 @Table(name = "annualaccreditionavailabilities")
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class AnnualAccreditationAvailability {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +37,7 @@ public class AnnualAccreditationAvailability {
 	public LocalDateTime createdAt;
 	public LocalDateTime updatedAt;
 
-	@JsonBackReference
+	@JsonIdentityReference(alwaysAsId = true)
 	@ManyToOne
 	@JoinColumn(name = "annualAccreditionId", referencedColumnName = "id")
 	public AnnualAccreditation annualAccreditation;

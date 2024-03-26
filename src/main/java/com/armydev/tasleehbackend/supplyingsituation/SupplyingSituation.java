@@ -3,7 +3,8 @@ package com.armydev.tasleehbackend.supplyingsituation;
 import java.time.LocalDateTime;
 
 import com.armydev.tasleehbackend.contracts.Contract;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,6 +19,7 @@ import jakarta.persistence.Table;
 
 @Table(name = "supplyingsituations")
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class SupplyingSituation {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +35,6 @@ public class SupplyingSituation {
   public LocalDateTime createdAt;
   public LocalDateTime updatedAt;
 
-  @JsonBackReference
   @ManyToOne
   @JoinColumn(name = "contractId", referencedColumnName = "id")
   public Contract contract;

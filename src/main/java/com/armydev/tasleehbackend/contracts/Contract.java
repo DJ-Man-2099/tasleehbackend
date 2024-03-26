@@ -7,8 +7,12 @@ import java.util.List;
 import com.armydev.tasleehbackend.annualaccreditation.AnnualAccreditation;
 import com.armydev.tasleehbackend.annualaccreditation.notification.AccreditationNotification;
 import com.armydev.tasleehbackend.errandsfiles.ErrandsFiles;
+import com.armydev.tasleehbackend.guaranteeletter.GuaranteeLetter;
+import com.armydev.tasleehbackend.guaranteeletter.notification.GuaranteeNotification;
 import com.armydev.tasleehbackend.supplyingsituation.SupplyingSituation;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,6 +25,7 @@ import jakarta.persistence.Table;
 
 @Table(name = "contracts")
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Contract {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,25 +44,33 @@ public class Contract {
   // @Column(name = "updatedAt")
   public LocalDateTime updatedAt;
 
-  @JsonManagedReference
+  @JsonIdentityReference(alwaysAsId = true)
   @OneToMany(mappedBy = "contract")
   public List<ContractFiles> files;
 
-  @JsonManagedReference
+  @JsonIdentityReference(alwaysAsId = true)
   @OneToMany(mappedBy = "contract")
   public List<ErrandsFiles> errandsfiles;
 
-  @JsonManagedReference
+  @JsonIdentityReference(alwaysAsId = true)
   @OneToMany(mappedBy = "contract")
   public List<SupplyingSituation> supplyingSituation;
 
-  @JsonManagedReference
+  @JsonIdentityReference(alwaysAsId = true)
   @OneToMany(mappedBy = "contract")
   public List<AnnualAccreditation> annualAccreditation;
 
-  @JsonManagedReference
+  @JsonIdentityReference(alwaysAsId = true)
   @OneToMany(mappedBy = "contract")
   public List<AccreditationNotification> accreditationNotification;
+
+  @JsonIdentityReference(alwaysAsId = true)
+  @OneToMany(mappedBy = "contract")
+  public List<GuaranteeLetter> guaranteeLetters;
+
+  @JsonIdentityReference(alwaysAsId = true)
+  @OneToMany(mappedBy = "contract")
+  public List<GuaranteeNotification> guaranteeNotification;
 
   // Must Add For date adding
   @PrePersist
