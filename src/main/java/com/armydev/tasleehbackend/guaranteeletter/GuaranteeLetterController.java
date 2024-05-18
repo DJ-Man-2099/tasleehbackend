@@ -215,9 +215,10 @@ public class GuaranteeLetterController {
 		try {
 			for (MultipartFile multipartFile : files) {
 				if (!multipartFile.isEmpty()) {
+					String fileName = URLDecoder.decode(multipartFile.getOriginalFilename(), "UTF-8");
 					destination = this.rootLocation
 							.resolve(Paths.get(id.toString(),
-									URLDecoder.decode(multipartFile.getOriginalFilename(), "UTF-8")))
+									fileName))
 							.normalize();
 					System.out.println(destination);
 					var folder = new File(
@@ -229,11 +230,14 @@ public class GuaranteeLetterController {
 					try (InputStream inputStream = multipartFile.getInputStream()) {
 						Files.copy(inputStream, destination.toAbsolutePath(),
 								StandardCopyOption.REPLACE_EXISTING);
-						var file = new GuaranteeLetterFiles();
-						file.guaranteeLetter = guaranteeLetter;
-						file.fileName = URLDecoder.decode(multipartFile.getOriginalFilename(), "UTF-8");
-						file.filePath = destination.toString();
-						filesRepo.save(file);
+						var file = filesRepo.findByGuaranteeLetterIdAndFileName(id, fileName);
+						if (file == null) {
+							file = new GuaranteeLetterFiles();
+							file.guaranteeLetter = guaranteeLetter;
+							file.fileName = fileName;
+							file.filePath = destination.toString();
+							filesRepo.save(file);
+						}
 					}
 				}
 			}

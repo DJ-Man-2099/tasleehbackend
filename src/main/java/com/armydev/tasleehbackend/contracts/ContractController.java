@@ -155,10 +155,12 @@ public class ContractController {
     try {
       for (MultipartFile multipartFile : files) {
         if (!multipartFile.isEmpty()) {
+          String fileName = URLDecoder.decode(multipartFile.getOriginalFilename(), "UTF-8");
           destination = this.rootLocation
-              .resolve(Paths.get(id.toString(), URLDecoder.decode(multipartFile.getOriginalFilename(), "UTF-8")))
+              .resolve(Paths.get(id.toString(), fileName))
               .normalize();
           System.out.println(destination);
+
           var folder = new File(
               this.rootLocation.resolve(Paths.get(id.toString())).normalize().toString());
           if (!folder.exists()) {
@@ -168,11 +170,14 @@ public class ContractController {
           try (InputStream inputStream = multipartFile.getInputStream()) {
             Files.copy(inputStream, destination.toAbsolutePath(),
                 StandardCopyOption.REPLACE_EXISTING);
-            var file = new ContractFiles();
-            file.contract = contract;
-            file.fileName = URLDecoder.decode(multipartFile.getOriginalFilename(), "UTF-8");
-            file.filePath = destination.toString();
-            filesRepo.save(file);
+            var file = filesRepo.findByContractIdAndFileName(id, fileName);
+            if (file == null) {
+              file = new ContractFiles();
+              file.contract = contract;
+              file.fileName = fileName;
+              file.filePath = destination.toString();
+              filesRepo.save(file);
+            }
           }
         }
       }
@@ -231,9 +236,10 @@ public class ContractController {
     try {
       for (MultipartFile multipartFile : files) {
         if (!multipartFile.isEmpty()) {
+          String fileName = URLDecoder.decode(multipartFile.getOriginalFilename(), "UTF-8");
           destination = this.rootLocation
               .resolve(
-                  Paths.get(id.toString(), "errands", URLDecoder.decode(multipartFile.getOriginalFilename(), "UTF-8")))
+                  Paths.get(id.toString(), "errands", fileName))
               .normalize();
           System.out.println(destination);
           var folder = new File(
@@ -245,11 +251,14 @@ public class ContractController {
           try (InputStream inputStream = multipartFile.getInputStream()) {
             Files.copy(inputStream, destination.toAbsolutePath(),
                 StandardCopyOption.REPLACE_EXISTING);
-            var file = new ErrandsFiles();
-            file.contract = contract;
-            file.fileName = URLDecoder.decode(multipartFile.getOriginalFilename(), "UTF-8");
-            file.filePath = destination.toString();
-            errandsFilesRepo.save(file);
+            var file = errandsFilesRepo.findByContractIdAndFileName(id, fileName);
+            if (file == null) {
+              file = new ErrandsFiles();
+              file.contract = contract;
+              file.fileName = fileName;
+              file.filePath = destination.toString();
+              errandsFilesRepo.save(file);
+            }
           }
         }
       }

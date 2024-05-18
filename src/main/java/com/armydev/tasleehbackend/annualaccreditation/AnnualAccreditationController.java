@@ -217,9 +217,10 @@ public class AnnualAccreditationController {
 		try {
 			for (MultipartFile multipartFile : files) {
 				if (!multipartFile.isEmpty()) {
+					String decode = URLDecoder.decode(multipartFile.getOriginalFilename(), "UTF-8");
 					destination = this.rootLocation
 							.resolve(Paths.get(id.toString(),
-									URLDecoder.decode(multipartFile.getOriginalFilename(), "UTF-8")))
+									decode))
 							.normalize();
 					System.out.println(destination);
 					var folder = new File(
@@ -231,11 +232,14 @@ public class AnnualAccreditationController {
 					try (InputStream inputStream = multipartFile.getInputStream()) {
 						Files.copy(inputStream, destination.toAbsolutePath(),
 								StandardCopyOption.REPLACE_EXISTING);
-						var file = new AnnualAccreditationFiles();
-						file.annualAccreditation = annualAccreditation;
-						file.fileName = URLDecoder.decode(multipartFile.getOriginalFilename(), "UTF-8");
-						file.filePath = destination.toString();
-						filesRepo.save(file);
+						var file = filesRepo.findByAnnualAccreditationIdAndFileName(id, decode);
+						if (file == null) {
+							file = new AnnualAccreditationFiles();
+							file.annualAccreditation = annualAccreditation;
+							file.fileName = decode;
+							file.filePath = destination.toString();
+							filesRepo.save(file);
+						}
 					}
 				}
 			}
