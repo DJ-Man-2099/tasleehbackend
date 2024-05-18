@@ -15,6 +15,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleException(Exception ex) {
         Map<String, Object> error = new HashMap<>();
         error.put("Reason", ex.getMessage());
+        error.put("Stack Trace", ex.getStackTrace());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 

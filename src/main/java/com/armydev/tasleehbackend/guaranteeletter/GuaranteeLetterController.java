@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,10 @@ import com.armydev.tasleehbackend.guaranteeletter.availability.GuaranteeLetterAv
 import com.armydev.tasleehbackend.guaranteeletter.availability.GuaranteeLetterAvailabilityRepo;
 import com.armydev.tasleehbackend.guaranteeletter.files.GuaranteeLetterFiles;
 import com.armydev.tasleehbackend.guaranteeletter.files.GuaranteeLetterFilesRepo;
+import com.armydev.tasleehbackend.guaranteeletter.notification.GuaranteeNotificationController;
 import com.armydev.tasleehbackend.helpers.RequestsHelper;
+import com.armydev.tasleehbackend.socketlistener.SocketServer;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import lombok.AllArgsConstructor;
 
@@ -44,7 +48,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class GuaranteeLetterController {
 
+	private final SocketServer socket;
 	private final GuaranteeLetterRepo repo;
+	private final GuaranteeNotificationController notifController;
 	private final GuaranteeLetterAvailabilityRepo avaRepo;
 	private final GuaranteeLetterFilesRepo filesRepo;
 	private final ContractRepo contractRepo;
@@ -117,17 +123,26 @@ public class GuaranteeLetterController {
 			result.put("status", HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.ok(result);
 		}
+		var oldDate = gl.latestDate.toLocalDate();
 		gl.letterSerialNo = current.letterSerialNo();
 		gl.guaranteeLetterValue = current.guaranteeLetterValue();
 		gl.letterType = current.letterType();
 		gl.reportedBank = current.reportedBank();
 		gl.latestDate = current.latestDate();
 		repo.save(gl);
-		var ava = new GuaranteeLetterAvailability();
-		ava.guaranteeLetter = gl;
-		ava.action = Action.koki;
-		ava.action_date = current.latestDate();
-		avaRepo.save(ava);
+		if (oldDate.isBefore(gl.latestDate.toLocalDate())) {
+			var ava = new GuaranteeLetterAvailability();
+			ava.guaranteeLetter = gl;
+			ava.action = Action.koki;
+			ava.action_date = current.latestDate();
+			avaRepo.save(ava);
+		}
+		if (!oldDate.isEqual(gl.latestDate.toLocalDate())) {
+			notifController.deleteNotification(gl);
+		}
+		if (gl.latestDate.toLocalDate().isBefore(LocalDate.now().plusDays(30))) {
+			notifController.addNewNotification(gl);
+		}
 		result.put("message", "guarantee letter updated successfully");
 		result.put("status", HttpStatus.OK.value());
 		return ResponseEntity.ok(result);
@@ -150,6 +165,12 @@ public class GuaranteeLetterController {
 		}
 		result.put("message", "guarantee letter deleted successfully");
 		result.put("status", HttpStatus.OK.value());
+		try {
+			socket.sendMessage(SocketServer.notificationsEvent, null);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return ResponseEntity.ok(result);
 	}
 

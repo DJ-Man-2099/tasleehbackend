@@ -4,14 +4,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.armydev.tasleehbackend.annualaccreditation.AnnualAccreditationRepo;
+import com.armydev.tasleehbackend.helpers.NotificationHelpers;
 import com.armydev.tasleehbackend.socketlistener.SocketServer;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.AllArgsConstructor;
 
@@ -21,11 +20,9 @@ public class AnnualNotificationChecker {
 	private final AccreditationNotificationRepo repo;
 	private final SocketServer socket;
 	private final AnnualAccreditationRepo aaRepo;
-	Jackson2ObjectMapperBuilder mapperBuilder;
 
 	@Scheduled(fixedDelay = 1000 * 30)
-	private void scheduleAccreditionDueCheck() throws JsonProcessingException {
-		ObjectMapper mapper = mapperBuilder.build();
+	private void scheduleAccreditionDueCheck() {
 		System.out.println("Checking for due accreditations");
 		var allAccreditations = aaRepo.findAll();
 		LocalDateTime now = LocalDateTime.now();
@@ -34,24 +31,38 @@ public class AnnualNotificationChecker {
 					ChronoUnit.DAYS) + 1;
 			var notification = repo.findByAnnualAccreditionId(accreditation.id);
 			System.out.println(period);
-			if (period <= 30 && notification == null) {
-				var newNotification = new AccreditationNotification();
-				newNotification.annualAccreditation = accreditation;
-				newNotification.contract = accreditation.contract;
-				newNotification.isRead = false;
-				newNotification.description = "Accredition " + accreditation.accreditionNo + " is due in " + period
-						+ " days";
-				repo.save(newNotification);
+			if (period <= 30) {
+				if (notification == null) {
+					notification = new AccreditationNotification();
+					notification.annualAccreditation = accreditation;
+					notification.contract = accreditation.contract;
+					notification.isRead = false;
+					notification.description = "Accredition " + accreditation.accreditionNo + " is due in " + period
+							+ " days";
+					repo.save(notification);
+				} else if (notification.isRead) {
+					notification.isRead = false;
+					notification.description = "Accredition " + accreditation.accreditionNo + " is due in " + period
+							+ " days";
+					repo.save(notification);
+				} else {
+					var newDescription = "Accredition " + accreditation.accreditionNo + " is due in " + period
+							+ " days";
+					if (!newDescription.equals(notification.description)) {
+						notification.description = newDescription;
+						repo.save(notification);
+					} else {
+						continue;
+					}
+				}
 
-				SentNotificationRecord data = new SentNotificationRecord(
-						now,
-						newNotification.annualAccreditation.id,
-						newNotification.contract.id,
-						newNotification.description,
-						newNotification.isRead);
-				var jsonString = mapper.writeValueAsString(data);
-				socket.sendMessage("annualNotification",
-						jsonString);
+				SentNotificationRecord data = NotificationHelpers.createAnnualNotificationRecord(notification);
+				try {
+					socket.sendMessage(SocketServer.annualEvent, data);
+				} catch (JsonProcessingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}

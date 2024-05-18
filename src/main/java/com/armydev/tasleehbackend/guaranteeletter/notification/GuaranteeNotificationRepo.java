@@ -12,4 +12,6 @@ public interface GuaranteeNotificationRepo
 
 	GuaranteeNotification findByGuaranteeLetterId(Integer id);
 
+	void deleteByGuaranteeLetterId(Integer id);
+
 }

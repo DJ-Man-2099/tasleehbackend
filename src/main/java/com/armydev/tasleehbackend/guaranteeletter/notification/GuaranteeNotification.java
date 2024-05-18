@@ -56,6 +56,8 @@ public class GuaranteeNotification {
 	protected void onCreate() {
 		createdAt = LocalDateTime.now();
 		updatedAt = LocalDateTime.now();
+		guaranteeLetterId = guaranteeLetter.id;
+		contractId = contract.id;
 	}
 
 	// Must add for date updating

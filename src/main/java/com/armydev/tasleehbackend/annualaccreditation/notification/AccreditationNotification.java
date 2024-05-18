@@ -56,6 +56,8 @@ public class AccreditationNotification {
 	protected void onCreate() {
 		createdAt = LocalDateTime.now();
 		updatedAt = LocalDateTime.now();
+		annualAccreditionId = annualAccreditation.id;
+		contractId = contract.id;
 	}
 
 	// Must add for date updating

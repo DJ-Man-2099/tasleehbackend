@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,9 +34,12 @@ import com.armydev.tasleehbackend.annualaccreditation.availability.AnnualAccredi
 import com.armydev.tasleehbackend.annualaccreditation.availability.AnnualAccreditationAvailabilityRepo;
 import com.armydev.tasleehbackend.annualaccreditation.files.AnnualAccreditationFiles;
 import com.armydev.tasleehbackend.annualaccreditation.files.AnnualAccreditationFilesRepo;
+import com.armydev.tasleehbackend.annualaccreditation.notification.AccreditationNotificationController;
 import com.armydev.tasleehbackend.contracts.Contract;
 import com.armydev.tasleehbackend.contracts.ContractRepo;
 import com.armydev.tasleehbackend.helpers.RequestsHelper;
+import com.armydev.tasleehbackend.socketlistener.SocketServer;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import lombok.AllArgsConstructor;
 
@@ -44,7 +48,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AnnualAccreditationController {
 
+	private final SocketServer socket;
 	private final AnnualAccreditationRepo repo;
+	private final AccreditationNotificationController notifController;
 	private final AnnualAccreditationAvailabilityRepo avaRepo;
 	private final AnnualAccreditationFilesRepo filesRepo;
 	private final ContractRepo contractRepo;
@@ -118,6 +124,7 @@ public class AnnualAccreditationController {
 			result.put("status", HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.ok(result);
 		}
+		var oldDate = aa.expiringDate.toLocalDate();
 		aa.accreditionNo = current.accreditionNo();
 		aa.accreditionValue = current.accreditionValue();
 		aa.currency = current.currency();
@@ -125,11 +132,19 @@ public class AnnualAccreditationController {
 		aa.openingDate = current.openingDate();
 		aa.expiringDate = current.expiringDate();
 		repo.save(aa);
-		var ava = new AnnualAccreditationAvailability();
-		ava.annualAccreditation = aa;
-		ava.action = Action.loki;
-		ava.action_date = current.expiringDate();
-		avaRepo.save(ava);
+		if (oldDate.isBefore(aa.expiringDate.toLocalDate())) {
+			var ava = new AnnualAccreditationAvailability();
+			ava.annualAccreditation = aa;
+			ava.action = Action.loki;
+			ava.action_date = current.expiringDate();
+			avaRepo.save(ava);
+		}
+		if (!oldDate.isEqual(aa.expiringDate.toLocalDate())) {
+			notifController.deleteNotification(aa);
+		}
+		if (aa.expiringDate.toLocalDate().isBefore(LocalDate.now().plusDays(30))) {
+			notifController.addNewNotification(aa);
+		}
 		result.put("message", "annual accreditation updated successfully");
 		result.put("status", HttpStatus.OK.value());
 		return ResponseEntity.ok(result);
@@ -152,6 +167,12 @@ public class AnnualAccreditationController {
 		}
 		result.put("message", "annual accreditation deleted successfully");
 		result.put("status", HttpStatus.OK.value());
+		try {
+			socket.sendMessage(SocketServer.notificationsEvent, null);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return ResponseEntity.ok(result);
 	}
 

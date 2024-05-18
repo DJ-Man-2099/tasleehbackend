@@ -1,9 +1,7 @@
 package com.armydev.tasleehbackend.annualaccreditation.notification;
 
-import java.time.LocalDateTime;
-
 public record SentNotificationRecord(
-		LocalDateTime createdAt,
+		String createdAt,
 		Integer AnnualAccreditionId,
 		Integer contractId,
 		String description,

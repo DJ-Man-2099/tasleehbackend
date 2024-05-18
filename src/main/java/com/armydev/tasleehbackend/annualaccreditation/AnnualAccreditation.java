@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -54,15 +55,15 @@ public class AnnualAccreditation {
 	public Integer contractId;
 
 	@JsonIdentityReference(alwaysAsId = true)
-	@OneToMany(mappedBy = "annualAccreditation")
+	@OneToMany(mappedBy = "annualAccreditation", cascade = CascadeType.REMOVE)
 	public List<AnnualAccreditationFiles> files;
 
 	@JsonIdentityReference(alwaysAsId = true)
-	@OneToMany(mappedBy = "annualAccreditation")
+	@OneToMany(mappedBy = "annualAccreditation", cascade = CascadeType.REMOVE)
 	public List<AnnualAccreditationAvailability> actions;
 
 	@JsonIdentityReference(alwaysAsId = true)
-	@OneToOne(mappedBy = "annualAccreditation")
+	@OneToOne(mappedBy = "annualAccreditation", cascade = CascadeType.REMOVE)
 	public AccreditationNotification notification;
 
 	// Must Add For date adding
