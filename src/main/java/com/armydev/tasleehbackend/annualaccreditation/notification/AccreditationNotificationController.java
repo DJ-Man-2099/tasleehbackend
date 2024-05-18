@@ -29,13 +29,14 @@ public class AccreditationNotificationController {
 	private final AccreditationNotificationRepo repo;
 	private final SocketServer socket;
 
-	@PostMapping("/{annualAccredId}")
+	@PostMapping("/{contract}/{annualAccredId}")
 	public ResponseEntity<Map<String, Object>> setReadNotification(
-			@NonNull @PathVariable("annualAccredId") Integer id) {
+			@NonNull @PathVariable("annualAccredId") Integer id,
+			@NonNull @PathVariable("contract") Integer contractId) {
 		var result = new HashMap<String, Object>();
 		AccreditationNotification notification;
 		try {
-			notification = repo.findByAnnualAccreditionId(id);
+			notification = repo.findByAnnualAccreditionIdAndContractId(id, contractId);
 		} catch (Exception e) {
 			result.put("error", "Notification not found");
 			result.put("status", HttpStatus.NOT_FOUND.value());
@@ -60,17 +61,20 @@ public class AccreditationNotificationController {
 	}
 
 	public void deleteNotification(AnnualAccreditation letter) {
-		var notification = repo.findByAnnualAccreditionId(letter.id);
+		var notification = repo.findByAnnualAccreditionIdAndContractId(letter.id, letter.contractId);
 		if (notification != null) {
 			repo.delete(notification);
 		}
 	}
 
-	public void addNewNotification(AnnualAccreditation letter) {
-		var newNotification = new AccreditationNotification();
+	public void upsertNotification(AnnualAccreditation letter) {
+		var newNotification = repo.findByAnnualAccreditionIdAndContractId(letter.id, letter.contractId);
 		LocalDateTime now = LocalDateTime.now();
-		newNotification.annualAccreditation = letter;
-		newNotification.contract = letter.contract;
+		if (newNotification == null) {
+			newNotification = new AccreditationNotification();
+			newNotification.annualAccreditation = letter;
+			newNotification.contract = letter.contract;
+		}
 		newNotification.description = String.format("Accredition %d is due in %d days", letter.accreditionNo,
 				now.until(letter.expiringDate.toLocalDate().atStartOfDay(ZoneId.systemDefault()),
 						java.time.temporal.ChronoUnit.DAYS));

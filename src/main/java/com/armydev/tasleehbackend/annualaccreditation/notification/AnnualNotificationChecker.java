@@ -29,7 +29,7 @@ public class AnnualNotificationChecker {
 		for (var accreditation : allAccreditations) {
 			var period = now.until(accreditation.expiringDate.toLocalDate().atStartOfDay(ZoneId.systemDefault()),
 					ChronoUnit.DAYS) + 1;
-			var notification = repo.findByAnnualAccreditionId(accreditation.id);
+			var notification = repo.findByAnnualAccreditionIdAndContractId(accreditation.id, accreditation.contractId);
 			System.out.println(period);
 			if (period <= 30) {
 				if (notification == null) {

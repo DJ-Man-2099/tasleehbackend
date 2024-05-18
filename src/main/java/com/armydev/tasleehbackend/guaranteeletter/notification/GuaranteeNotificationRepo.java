@@ -10,8 +10,6 @@ public interface GuaranteeNotificationRepo
 
 	List<GuaranteeNotification> findAllByIsRead(boolean b);
 
-	GuaranteeNotification findByGuaranteeLetterId(Integer id);
-
-	void deleteByGuaranteeLetterId(Integer id);
+	GuaranteeNotification findByGuaranteeLetterIdAndContractId(Integer letterId, Integer contractId);
 
 }

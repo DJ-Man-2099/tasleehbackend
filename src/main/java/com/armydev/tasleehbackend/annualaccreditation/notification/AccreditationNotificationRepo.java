@@ -10,6 +10,6 @@ public interface AccreditationNotificationRepo
 
 	List<AccreditationNotification> findAllByIsRead(boolean b);
 
-	AccreditationNotification findByAnnualAccreditionId(Integer id);
+	AccreditationNotification findByAnnualAccreditionIdAndContractId(Integer id, Integer contractId);
 
 }

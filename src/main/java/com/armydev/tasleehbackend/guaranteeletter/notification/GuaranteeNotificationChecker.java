@@ -28,7 +28,7 @@ public class GuaranteeNotificationChecker {
 		for (var letter : allLetters) {
 			var period = now.until(letter.latestDate.toLocalDate().atStartOfDay(ZoneId.systemDefault()),
 					ChronoUnit.DAYS) + 1;
-			var notification = repo.findByGuaranteeLetterId(letter.id);
+			var notification = repo.findByGuaranteeLetterIdAndContractId(letter.id, letter.contractId);
 			System.out.println(period);
 			if (period <= 30) {
 				if (notification == null) {

@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,12 +136,7 @@ public class GuaranteeLetterController {
 			ava.action_date = current.latestDate();
 			avaRepo.save(ava);
 		}
-		if (!oldDate.isEqual(gl.latestDate.toLocalDate())) {
-			notifController.deleteNotification(gl);
-		}
-		if (gl.latestDate.toLocalDate().isBefore(LocalDate.now().plusDays(30))) {
-			notifController.addNewNotification(gl);
-		}
+		notifController.upsertNotification(gl);
 		result.put("message", "guarantee letter updated successfully");
 		result.put("status", HttpStatus.OK.value());
 		return ResponseEntity.ok(result);

@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,12 +138,7 @@ public class AnnualAccreditationController {
 			ava.action_date = current.expiringDate();
 			avaRepo.save(ava);
 		}
-		if (!oldDate.isEqual(aa.expiringDate.toLocalDate())) {
-			notifController.deleteNotification(aa);
-		}
-		if (aa.expiringDate.toLocalDate().isBefore(LocalDate.now().plusDays(30))) {
-			notifController.addNewNotification(aa);
-		}
+		notifController.upsertNotification(aa);
 		result.put("message", "annual accreditation updated successfully");
 		result.put("status", HttpStatus.OK.value());
 		return ResponseEntity.ok(result);

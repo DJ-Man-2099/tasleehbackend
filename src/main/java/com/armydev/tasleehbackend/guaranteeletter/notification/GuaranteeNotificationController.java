@@ -29,13 +29,14 @@ public class GuaranteeNotificationController {
 	private final GuaranteeNotificationRepo repo;
 	private final SocketServer socket;
 
-	@PostMapping("/{annualAccredId}")
+	@PostMapping("/{contract}/{annualAccredId}")
 	public ResponseEntity<Map<String, Object>> setReadNotification(
-			@NonNull @PathVariable("annualAccredId") Integer id) {
+			@NonNull @PathVariable("annualAccredId") Integer id,
+			@NonNull @PathVariable("contract") Integer contractId) {
 		var result = new HashMap<String, Object>();
 		GuaranteeNotification notification;
 		try {
-			notification = repo.findByGuaranteeLetterId(id);
+			notification = repo.findByGuaranteeLetterIdAndContractId(id, contractId);
 		} catch (Exception e) {
 			result.put("error", "Notification not found");
 			result.put("status", HttpStatus.NOT_FOUND.value());
@@ -60,17 +61,20 @@ public class GuaranteeNotificationController {
 	}
 
 	public void deleteNotification(GuaranteeLetter letter) {
-		var notification = repo.findByGuaranteeLetterId(letter.id);
+		var notification = repo.findByGuaranteeLetterIdAndContractId(letter.id, letter.contractId);
 		if (notification != null) {
 			repo.delete(notification);
 		}
 	}
 
-	public void addNewNotification(GuaranteeLetter letter) {
-		var newNotification = new GuaranteeNotification();
+	public void upsertNotification(GuaranteeLetter letter) {
 		LocalDateTime now = LocalDateTime.now();
-		newNotification.guaranteeLetter = letter;
-		newNotification.contract = letter.contract;
+		var newNotification = repo.findByGuaranteeLetterIdAndContractId(letter.id, letter.contractId);
+		if (newNotification == null) {
+			newNotification = new GuaranteeNotification();
+			newNotification.guaranteeLetter = letter;
+			newNotification.contract = letter.contract;
+		}
 		newNotification.description = String.format("Letter %s is due in %d days", letter.letterSerialNo,
 				now.until(letter.latestDate.toLocalDate().atStartOfDay(ZoneId.systemDefault()),
 						java.time.temporal.ChronoUnit.DAYS));
