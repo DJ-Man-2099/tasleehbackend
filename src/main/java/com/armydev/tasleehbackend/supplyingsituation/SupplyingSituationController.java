@@ -80,7 +80,7 @@ public class SupplyingSituationController {
 	}
 
 	@PatchMapping("{id}")
-	public ResponseEntity<Map<String, Object>> updateContractSupplyingSituation(@NonNull @PathVariable("id") Integer id,
+	public ResponseEntity<Map<String, Object>> updateContractSupplyingSituation(@NonNull @PathVariable Integer id,
 			@RequestBody UpsertSupplyingSituationRequest newSupplyingSituation) {
 		var result = new HashMap<String, Object>();
 		SupplyingSituation supplyingSituation = repo.findById(id).orElseThrow();
@@ -97,7 +97,7 @@ public class SupplyingSituationController {
 
 	@DeleteMapping("{id}")
 	public ResponseEntity<Map<String, Object>> deleteContractSupplyingSituation(
-			@NonNull @PathVariable("id") Integer id) {
+			@NonNull @PathVariable Integer id) {
 		var result = new HashMap<String, Object>();
 		SupplyingSituation supplyingSituation;
 		try {
@@ -119,7 +119,7 @@ public class SupplyingSituationController {
 
 	@GetMapping("{contractId}")
 	public ResponseEntity<Map<String, Object>> getContractSupplyingSituation(
-			@NonNull @PathVariable("contractId") Integer contractId, @RequestParam Map<String, String> searchParams)
+			@NonNull @PathVariable Integer contractId, @RequestParam Map<String, String> searchParams)
 			throws Exception {
 		var result = new HashMap<String, Object>();
 		Contract current = contractRepo.findById(contractId).orElseThrow();

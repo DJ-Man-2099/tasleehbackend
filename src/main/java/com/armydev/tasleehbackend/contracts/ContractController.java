@@ -40,7 +40,6 @@ import com.armydev.tasleehbackend.errandsfiles.ErrandsFilesRepo;
 import com.armydev.tasleehbackend.helpers.RequestsHelper;
 
 import lombok.AllArgsConstructor;
-import lombok.var;
 
 @RestController
 @RequestMapping("contracts")
@@ -86,7 +85,7 @@ public class ContractController {
   }
 
   @GetMapping(value = "{id:[\\d]++}")
-  public ResponseEntity<Map<String, Object>> getContractById(@NonNull @PathVariable("id") Integer id) {
+  public ResponseEntity<Map<String, Object>> getContractById(@NonNull @PathVariable Integer id) {
     var result = new HashMap<String, Object>();
     try {
       var data = repo.findById(id).orElseThrow();
@@ -101,7 +100,7 @@ public class ContractController {
   }
 
   @DeleteMapping(value = "{id}")
-  public ResponseEntity<Map<String, Object>> deleteContractById(@NonNull @PathVariable("id") Integer id) {
+  public ResponseEntity<Map<String, Object>> deleteContractById(@NonNull @PathVariable Integer id) {
     var result = new HashMap<String, Object>();
     try {
       repo.findById(id).orElseThrow();
@@ -124,14 +123,14 @@ public class ContractController {
       return ResponseEntity.ok(result);
     }
     repo.deleteById(id);
-    result.put("message", String.format("Contract %d deleted successfully", id));
+    result.put("message", "Contract %d deleted successfully".formatted(id));
     result.put("status", HttpStatus.OK.value());
 
     return ResponseEntity.ok(result);
   }
 
   @PatchMapping(value = "{id}")
-  public ResponseEntity<Map<String, Object>> updateContract(@NonNull @PathVariable("id") Integer id,
+  public ResponseEntity<Map<String, Object>> updateContract(@NonNull @PathVariable Integer id,
       @RequestBody UpdateContractRequest contract) {
     var result = new HashMap<String, Object>();
     Contract newContract = null;
@@ -156,13 +155,13 @@ public class ContractController {
       return ResponseEntity.ok(result);
     }
     result.put("status", HttpStatus.OK.value());
-    result.put("message", String.format("Contract %d updated successfully", id));
+    result.put("message", "Contract %d updated successfully".formatted(id));
     result.put("id", newContract.id);
     return ResponseEntity.ok(result);
   }
 
   @PostMapping(value = "{id}/upload")
-  public ResponseEntity<Map<String, Object>> uploadContractFiles(@NonNull @PathVariable("id") Integer id,
+  public ResponseEntity<Map<String, Object>> uploadContractFiles(@NonNull @PathVariable Integer id,
       @RequestParam("contractFiles") List<MultipartFile> files) {
     var result = new HashMap<String, Object>();
     var contract = repo.findById(id).orElseThrow();
@@ -205,7 +204,7 @@ public class ContractController {
   }
 
   @GetMapping(value = "{id}/contractfiles")
-  public ResponseEntity<Map<String, Object>> getContractFilesById(@NonNull @PathVariable("id") Integer id) {
+  public ResponseEntity<Map<String, Object>> getContractFilesById(@NonNull @PathVariable Integer id) {
     var result = new HashMap<String, Object>();
     var innerResult = new HashMap<String, Object>();
     try {
@@ -224,7 +223,7 @@ public class ContractController {
   }
 
   @GetMapping(value = "{id}/contractErrandsFiles")
-  public ResponseEntity<Map<String, Object>> getContractErrandsFilesById(@NonNull @PathVariable("id") Integer id) {
+  public ResponseEntity<Map<String, Object>> getContractErrandsFilesById(@NonNull @PathVariable Integer id) {
     var result = new HashMap<String, Object>();
     var innerResult = new HashMap<String, Object>();
     try {
@@ -243,7 +242,7 @@ public class ContractController {
   }
 
   @PostMapping(value = "{id}/errandsUpload")
-  public ResponseEntity<Map<String, Object>> uploadContractErrandsFiles(@NonNull @PathVariable("id") Integer id,
+  public ResponseEntity<Map<String, Object>> uploadContractErrandsFiles(@NonNull @PathVariable Integer id,
       @RequestParam("errandsFiles") List<MultipartFile> files) {
     var result = new HashMap<String, Object>();
     var contract = repo.findById(id).orElseThrow();

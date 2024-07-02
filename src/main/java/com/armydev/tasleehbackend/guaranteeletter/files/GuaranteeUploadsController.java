@@ -29,7 +29,7 @@ public class GuaranteeUploadsController {
   private final Path rootLocation = Paths.get("guaranteeLetterUploads");
 
   @GetMapping(path = "{id}/{filename}")
-  public ResponseEntity<Resource> serveGuaranteeFile(@PathVariable("id") Integer id,
+  public ResponseEntity<Resource> serveGuaranteeFile(@PathVariable Integer id,
 
       @PathVariable("filename") String fileName) {
     var file = new File(this.rootLocation.resolve(Paths.get(Integer.toString(id),
@@ -60,7 +60,7 @@ public class GuaranteeUploadsController {
   }
 
   @DeleteMapping(path = "{id}/{filename}")
-  public ResponseEntity<Map<String, Object>> deleteAnnualFile(@PathVariable("id") Integer id,
+  public ResponseEntity<Map<String, Object>> deleteAnnualFile(@PathVariable Integer id,
 
       @PathVariable("filename") String fileName) {
     var result = new HashMap<String, Object>();

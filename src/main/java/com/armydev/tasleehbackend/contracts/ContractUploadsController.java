@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.armydev.tasleehbackend.errandsfiles.ErrandsFilesRepo;
 
 import lombok.AllArgsConstructor;
-import lombok.var;
 
 @RestController
 @RequestMapping("uploads")
@@ -33,7 +32,7 @@ public class ContractUploadsController {
   private final Path rootLocation = Paths.get("uploads");
 
   @GetMapping(path = "{id}/{filename}")
-  public ResponseEntity<Resource> serveContractFile(@PathVariable("id") Integer id,
+  public ResponseEntity<Resource> serveContractFile(@PathVariable Integer id,
       @PathVariable("filename") String fileName) {
     var file = new File(this.rootLocation.resolve(Paths.get(Integer.toString(id), fileName)).normalize().toString());
     try {
@@ -61,7 +60,7 @@ public class ContractUploadsController {
   }
 
   @DeleteMapping(path = "{id}/{filename}")
-  public ResponseEntity<Map<String, Object>> deleteContractFile(@PathVariable("id") Integer id,
+  public ResponseEntity<Map<String, Object>> deleteContractFile(@PathVariable Integer id,
       @PathVariable("filename") String fileName) {
     var result = new HashMap<String, Object>();
     var file = new File(this.rootLocation.resolve(Paths.get(Integer.toString(id), fileName)).normalize().toString());
@@ -92,7 +91,7 @@ public class ContractUploadsController {
   }
 
   @GetMapping(path = "{id}/errands/{filename}")
-  public ResponseEntity<Resource> serveContractErrandFile(@PathVariable("id") Integer id,
+  public ResponseEntity<Resource> serveContractErrandFile(@PathVariable Integer id,
       @PathVariable("filename") String fileName) {
     var file = new File(
         this.rootLocation.resolve(Paths.get(Integer.toString(id), "errands", fileName)).normalize().toString());
@@ -120,7 +119,7 @@ public class ContractUploadsController {
   }
 
   @DeleteMapping(path = "{id}/errands/{filename}")
-  public ResponseEntity<Map<String, Object>> deleteContractErrandsFile(@PathVariable("id") Integer id,
+  public ResponseEntity<Map<String, Object>> deleteContractErrandsFile(@PathVariable Integer id,
       @PathVariable("filename") String fileName) {
     var result = new HashMap<String, Object>();
     var file = new File(

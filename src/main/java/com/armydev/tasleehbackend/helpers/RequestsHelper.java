@@ -19,7 +19,7 @@ public class RequestsHelper<T> {
 		for (var filterEntry : filters.entrySet()) {
 			if (!specsMap.containsKey(filterEntry.getKey()))
 				throw new Exception(
-						String.format("Attribute %s cannot be found within %s",
+						"Attribute %s cannot be found within %s".formatted(
 								filterEntry.getKey(), type.getSimpleName()));
 			filter = Specification.where(filter)
 					.and(specsMap.get(filterEntry.getKey()).apply(filterEntry.getValue()));

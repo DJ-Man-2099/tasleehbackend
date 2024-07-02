@@ -17,8 +17,7 @@ public class RemoveTrailingSlashes implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		if (request instanceof HttpServletRequest) {
-			HttpServletRequest httpRequest = (HttpServletRequest) request;
+		if (request instanceof HttpServletRequest httpRequest) {
 			String requestURI = httpRequest.getRequestURI();
 			if (requestURI.length() > 1 && requestURI.endsWith("/")) {
 				// Remove the trailing slash and redirect or forward as per requirement

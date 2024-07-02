@@ -82,7 +82,7 @@ public class GuaranteeLetterController {
 
 	@PostMapping("{contractId}")
 	public ResponseEntity<Map<String, Object>> createGuaranteeLetter(
-			@NonNull @PathVariable("contractId") Integer contractId,
+			@NonNull @PathVariable Integer contractId,
 			@RequestBody UpsertGuaranteeLetterRequest current) {
 		var result = new HashMap<String, Object>();
 		var gl = new GuaranteeLetter();
@@ -112,7 +112,7 @@ public class GuaranteeLetterController {
 	}
 
 	@PatchMapping("{id}")
-	public ResponseEntity<Map<String, Object>> updateContractGuaranteeLetter(@NonNull @PathVariable("id") Integer id,
+	public ResponseEntity<Map<String, Object>> updateContractGuaranteeLetter(@NonNull @PathVariable Integer id,
 			@RequestBody UpsertGuaranteeLetterRequest current) {
 		var result = new HashMap<String, Object>();
 		GuaranteeLetter gl;
@@ -145,7 +145,7 @@ public class GuaranteeLetterController {
 
 	@DeleteMapping("{id}")
 	public ResponseEntity<Map<String, Object>> deleteContractGuaranteeLetter(
-			@NonNull @PathVariable("id") Integer id) {
+			@NonNull @PathVariable Integer id) {
 		var result = new HashMap<String, Object>();
 		GuaranteeLetter aa;
 		try {
@@ -183,7 +183,7 @@ public class GuaranteeLetterController {
 	}
 
 	@GetMapping("getLetter/{id}")
-	public ResponseEntity<Map<String, Object>> getGuarantee(@NonNull @PathVariable("id") Integer id) {
+	public ResponseEntity<Map<String, Object>> getGuarantee(@NonNull @PathVariable Integer id) {
 		var result = new HashMap<String, Object>();
 		// Get Data
 		try {
@@ -200,7 +200,7 @@ public class GuaranteeLetterController {
 
 	@GetMapping("{contractId}")
 	public ResponseEntity<Map<String, Object>> getContractGuaranteeLetter(
-			@NonNull @PathVariable("contractId") Integer contractId)
+			@NonNull @PathVariable Integer contractId)
 			throws Exception {
 		var result = new HashMap<String, Object>();
 		// Set Filters
@@ -221,7 +221,7 @@ public class GuaranteeLetterController {
 	}
 
 	@PostMapping(value = "{id}/upload")
-	public ResponseEntity<Map<String, Object>> uploadGuaranteeLetterFiles(@NonNull @PathVariable("id") Integer id,
+	public ResponseEntity<Map<String, Object>> uploadGuaranteeLetterFiles(@NonNull @PathVariable Integer id,
 			@RequestParam("guaranteeLetterFiles") List<MultipartFile> files) {
 		var result = new HashMap<String, Object>();
 		var guaranteeLetter = repo.findById(id).orElseThrow();
@@ -264,7 +264,7 @@ public class GuaranteeLetterController {
 	}
 
 	@GetMapping(value = "/guaranteeLetterFiles/{id}")
-	public ResponseEntity<Map<String, Object>> getGuaranteeLetterFiles(@NonNull @PathVariable("id") Integer id) {
+	public ResponseEntity<Map<String, Object>> getGuaranteeLetterFiles(@NonNull @PathVariable Integer id) {
 		var result = new HashMap<String, Object>();
 		var innerResult = new HashMap<String, Object>();
 		try {

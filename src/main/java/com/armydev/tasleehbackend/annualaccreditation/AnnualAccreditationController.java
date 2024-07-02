@@ -82,7 +82,7 @@ public class AnnualAccreditationController {
 
 	@PostMapping("{contractId}")
 	public ResponseEntity<Map<String, Object>> createAnnualAccredition(
-			@NonNull @PathVariable("contractId") Integer contractId,
+			@NonNull @PathVariable Integer contractId,
 			@RequestBody UpsertAnnualAccreditationRequest current) {
 		var result = new HashMap<String, Object>();
 		var aa = new AnnualAccreditation();
@@ -113,7 +113,7 @@ public class AnnualAccreditationController {
 	}
 
 	@PatchMapping("{id}")
-	public ResponseEntity<Map<String, Object>> updateContractAnnualAccredition(@NonNull @PathVariable("id") Integer id,
+	public ResponseEntity<Map<String, Object>> updateContractAnnualAccredition(@NonNull @PathVariable Integer id,
 			@RequestBody UpsertAnnualAccreditationRequest current) {
 		var result = new HashMap<String, Object>();
 		AnnualAccreditation aa;
@@ -147,7 +147,7 @@ public class AnnualAccreditationController {
 
 	@DeleteMapping("{id}")
 	public ResponseEntity<Map<String, Object>> deleteContractAnnualAccredition(
-			@NonNull @PathVariable("id") Integer id) {
+			@NonNull @PathVariable Integer id) {
 		var result = new HashMap<String, Object>();
 		AnnualAccreditation aa;
 		try {
@@ -185,7 +185,7 @@ public class AnnualAccreditationController {
 	}
 
 	@GetMapping("getAnnual/{id}")
-	public ResponseEntity<Map<String, Object>> getAnnual(@NonNull @PathVariable("id") Integer id) {
+	public ResponseEntity<Map<String, Object>> getAnnual(@NonNull @PathVariable Integer id) {
 		var result = new HashMap<String, Object>();
 		// Get Data
 		try {
@@ -202,7 +202,7 @@ public class AnnualAccreditationController {
 
 	@GetMapping("{contractId}")
 	public ResponseEntity<Map<String, Object>> getContractAnnualAccredition(
-			@NonNull @PathVariable("contractId") Integer contractId)
+			@NonNull @PathVariable Integer contractId)
 			throws Exception {
 		var result = new HashMap<String, Object>();
 		// Set Filters
@@ -223,7 +223,7 @@ public class AnnualAccreditationController {
 	}
 
 	@PostMapping(value = "{id}/upload")
-	public ResponseEntity<Map<String, Object>> uploadAnnualAccreditionFiles(@NonNull @PathVariable("id") Integer id,
+	public ResponseEntity<Map<String, Object>> uploadAnnualAccreditionFiles(@NonNull @PathVariable Integer id,
 			@RequestParam("annualAcreditionFiles") List<MultipartFile> files) {
 		var result = new HashMap<String, Object>();
 		var annualAccreditation = repo.findById(id).orElseThrow();
@@ -266,7 +266,7 @@ public class AnnualAccreditationController {
 	}
 
 	@GetMapping(value = "/annualAccreditionsFiles/{id}")
-	public ResponseEntity<Map<String, Object>> getAnnualAccreditionFiles(@NonNull @PathVariable("id") Integer id) {
+	public ResponseEntity<Map<String, Object>> getAnnualAccreditionFiles(@NonNull @PathVariable Integer id) {
 		var result = new HashMap<String, Object>();
 		var innerResult = new HashMap<String, Object>();
 		try {

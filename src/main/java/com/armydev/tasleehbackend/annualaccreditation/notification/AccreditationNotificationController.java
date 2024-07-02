@@ -75,7 +75,7 @@ public class AccreditationNotificationController {
 			newNotification.annualAccreditation = letter;
 			newNotification.contract = letter.contract;
 		}
-		newNotification.description = String.format("Accredition %d is due in %d days", letter.accreditionNo,
+		newNotification.description = "Accredition %d is due in %d days".formatted(letter.accreditionNo,
 				now.until(letter.expiringDate.toLocalDate().atStartOfDay(ZoneId.systemDefault()),
 						java.time.temporal.ChronoUnit.DAYS));
 		repo.save(newNotification);

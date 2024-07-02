@@ -75,7 +75,7 @@ public class GuaranteeNotificationController {
 			newNotification.guaranteeLetter = letter;
 			newNotification.contract = letter.contract;
 		}
-		newNotification.description = String.format("Letter %s is due in %d days", letter.letterSerialNo,
+		newNotification.description = "Letter %s is due in %d days".formatted(letter.letterSerialNo,
 				now.until(letter.latestDate.toLocalDate().atStartOfDay(ZoneId.systemDefault()),
 						java.time.temporal.ChronoUnit.DAYS));
 		repo.save(newNotification);

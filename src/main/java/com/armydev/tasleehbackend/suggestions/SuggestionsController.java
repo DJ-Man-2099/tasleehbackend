@@ -27,8 +27,8 @@ public class SuggestionsController {
 	private final GuaranteeLetterRepo glRepo;
 
 	@GetMapping(value = "{type}")
-	public ResponseEntity<Map<String, Object>> getSuggestions(@PathVariable("type") String type,
-			@RequestParam(value = "pattern", required = false) String pattern) {
+	public ResponseEntity<Map<String, Object>> getSuggestions(@PathVariable String type,
+			@RequestParam(required = false) String pattern) {
 		var result = new HashMap<String, Object>();
 		if (pattern == null) {
 			pattern = "";
