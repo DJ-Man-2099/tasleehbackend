@@ -25,8 +25,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class GuaranteeUploadsController {
 
-  // TODO: Delete all the filesRepo and errandsFilesRepo on Deleting the contract
-
   private final GuaranteeLetterFilesRepo filesRepo;
   private final Path rootLocation = Paths.get("guaranteeLetterUploads");
 

@@ -13,7 +13,6 @@ public class GuaranteeLetterSpecs {
 
 	static {
 		specsMap.put("contract", value -> GuaranteeLetterSpecs.byContract((Contract) value));
-
 	}
 
 	public static Specification<GuaranteeLetter> byContract(Contract contract) {

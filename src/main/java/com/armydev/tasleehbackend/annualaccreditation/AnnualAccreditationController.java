@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -157,6 +158,19 @@ public class AnnualAccreditationController {
 		} catch (Exception e) {
 			result.put("error", e.getMessage());
 			result.put("status", HttpStatus.NOT_FOUND.value());
+			return ResponseEntity.ok(result);
+		}
+		try {
+			Files.walk(this.rootLocation.resolve(Paths.get(Integer.toString(id))))
+					.sorted(Comparator.reverseOrder())
+					.map(Path::toFile)
+					.forEach(File::delete);
+
+		} catch (Exception e) {
+			System.err.println("Deleting Failed");
+			System.err.println(e);
+			result.put("error", "Can't Delete File");
+			result.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return ResponseEntity.ok(result);
 		}
 		result.put("message", "annual accreditation deleted successfully");

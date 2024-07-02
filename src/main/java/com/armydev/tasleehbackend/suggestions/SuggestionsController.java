@@ -46,6 +46,7 @@ public class SuggestionsController {
 					data = contractRepo.getContractNoSuggestions(pattern);
 					break;
 				case "openingBank":
+					// TODO: Add All Opening Banks
 					data = aaRepo.getOpeningBankSuggestions(pattern);
 					break;
 				case "reportedBank":

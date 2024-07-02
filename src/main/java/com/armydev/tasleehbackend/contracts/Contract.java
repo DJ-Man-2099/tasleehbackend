@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -45,31 +46,31 @@ public class Contract {
   public LocalDateTime updatedAt;
 
   @JsonIdentityReference(alwaysAsId = true)
-  @OneToMany(mappedBy = "contract")
+  @OneToMany(mappedBy = "contract", cascade = CascadeType.REMOVE)
   public List<ContractFiles> files;
 
   @JsonIdentityReference(alwaysAsId = true)
-  @OneToMany(mappedBy = "contract")
+  @OneToMany(mappedBy = "contract", cascade = CascadeType.REMOVE)
   public List<ErrandsFiles> errandsfiles;
 
   @JsonIdentityReference(alwaysAsId = true)
-  @OneToMany(mappedBy = "contract")
+  @OneToMany(mappedBy = "contract", cascade = CascadeType.REMOVE)
   public List<SupplyingSituation> supplyingSituation;
 
   @JsonIdentityReference(alwaysAsId = true)
-  @OneToMany(mappedBy = "contract")
+  @OneToMany(mappedBy = "contract", cascade = CascadeType.REMOVE)
   public List<AnnualAccreditation> annualAccreditation;
 
   @JsonIdentityReference(alwaysAsId = true)
-  @OneToMany(mappedBy = "contract")
+  @OneToMany(mappedBy = "contract", cascade = CascadeType.REMOVE)
   public List<AccreditationNotification> accreditationNotification;
 
   @JsonIdentityReference(alwaysAsId = true)
-  @OneToMany(mappedBy = "contract")
+  @OneToMany(mappedBy = "contract", cascade = CascadeType.REMOVE)
   public List<GuaranteeLetter> guaranteeLetters;
 
   @JsonIdentityReference(alwaysAsId = true)
-  @OneToMany(mappedBy = "contract")
+  @OneToMany(mappedBy = "contract", cascade = CascadeType.REMOVE)
   public List<GuaranteeNotification> guaranteeNotification;
 
   // Must Add For date adding

@@ -28,8 +28,6 @@ import lombok.var;
 @AllArgsConstructor
 public class ContractUploadsController {
 
-  // TODO: Delete all the filesRepo and errandsFilesRepo on Deleting the contract
-
   private final ContractFilesRepo filesRepo;
   private final ErrandsFilesRepo errandsFilesRepo;
   private final Path rootLocation = Paths.get("uploads");

@@ -25,8 +25,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AnnualUploadsController {
 
-  // TODO: Delete all the filesRepo and errandsFilesRepo on Deleting the contract
-
   private final AnnualAccreditationFilesRepo filesRepo;
   private final Path rootLocation = Paths.get("annualAccreditionUploads");
 
