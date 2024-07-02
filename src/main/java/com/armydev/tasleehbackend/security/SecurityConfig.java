@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
-// import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -30,18 +30,16 @@ public class SecurityConfig implements WebMvcConfigurer {
         return http.build();
     }
 
-    /*
-     * @Override
-     * public void configurePathMatch(@NonNull PathMatchConfigurer configurer) {
-     * configurer.setUseTrailingSlashMatch(true);
-     * }
-     */
+    @Override
+    public void configurePathMatch(@NonNull PathMatchConfigurer configurer) {
+        configurer.setUseTrailingSlashMatch(true);
+    }
     // for serving static resources
     /*
      * private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
      * "classpath:/META-INF/resources/", "classpath:/resources/",
      * "classpath:/static/", "classpath:/public/" };
-     *
+     * 
      * @Override
      * public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
      * // registry.addResourceHandler("/assets/images/**")
